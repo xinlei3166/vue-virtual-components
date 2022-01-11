@@ -1,0 +1,95 @@
+.vue-virtual-table {
+  box-sizing: border-box;
+  border-radius: 2px;
+  width: 100%;
+  &:not(.vue-virtual-table-single-line) {
+    .vue-virtual-table-th,
+    .vue-virtual-table-td {
+      border-right: 1px solid var(--vt-border-color);
+    }
+  }
+}
+
+.vue-virtual-table-bordered {
+  border: 1px solid var(--vt-border-color);
+
+  .vue-virtual-table-body .vue-virtual-table-tr:last-child > .vue-virtual-table-td {
+    border-bottom: 0;
+  }
+}
+
+.vue-virtual-table-header {
+  width: 100%;
+  margin-bottom: -15px;
+  padding-bottom: 0;
+  min-width: 15px;
+  overflow: scroll;
+}
+
+.vue-virtual-table-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.vue-virtual-table-th,
+.vue-virtual-table-td {
+  padding: 16px;
+  overflow-wrap: break-word;
+  text-align: start;
+  border-bottom: 1px solid var(--vt-border-color);
+}
+
+.vue-virtual-table-th--fixed-left, .vue-virtual-table-td--fixed-left {
+  position: sticky;
+  left: 0;
+  &::after {
+    pointer-events: none;
+    content: "";
+    width: 36px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    transition: box-shadow .2s var(--vt-bezier);
+    right: -36px;
+    box-shadow: var(--vt-box-shadow-after);
+  }
+}
+
+
+.vue-virtual-table-th {
+  color: var(--vt-text-header-color);
+  font-weight: 500;
+  background: var(--vt-bg-header-color);
+  transition: background 0.3s ease;
+  &:last-child {
+    border-right: 0 !important;
+  }
+}
+
+.vue-virtual-table-tr {
+  &:hover .vue-virtual-table-td {
+    background: var(--vt-bg-highlight-color);
+  }
+  & .vue-virtual-table-td:last-child {
+    //border-right-color: transparent;
+    border-right: 0 !important;
+  }
+}
+
+.vue-virtual-table-td {
+  background: var(--vt-bg-color);
+  transition: background 0.3s;
+}
+
+// antd table style
+.vue-virtual-table-antd {
+  //
+}
+
+// element table style
+.vue-virtual-table-element {
+  //
+}
