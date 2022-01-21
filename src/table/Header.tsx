@@ -1,8 +1,12 @@
-import { defineComponent, CSSProperties, reactive, onMounted } from 'vue'
-import { measureScrollbar } from '../utils'
+import { defineComponent, CSSProperties, renderSlot, reactive, inject, onMounted } from 'vue'
+import { pxfy } from 'seemly'
+import { tableInjectionKey } from '../interface'
+import { measureScrollbar, getColKey } from '../utils'
 
 export default defineComponent({
-  setup(props, { slots }) {
+  setup(props) {
+    const { slots, rows, cols, componentId } = inject(tableInjectionKey)!
+
     const headStyle = reactive<CSSProperties>({})
     const prefixCls = 'vue-virtual-table'
     const scrollbarWidth = measureScrollbar({ direction: 'vertical' })
@@ -33,20 +37,37 @@ export default defineComponent({
       >
         <table class="vue-virtual-table-table">
           <colgroup>
-            <col style={{ minWidth: '200px' }} />
-            <col style={{ minWidth: '200px' }} />
-            <col style={{ minWidth: '200px' }} />
-            <col style={{ minWidth: '200px' }} />
-            <col style={{ minWidth: '200px' }} />
+            {cols.value.map(col => (
+              <col key={col.key} style={col.style}></col>
+            ))}
           </colgroup>
-          <thead class="vue-virtual-table-thead">
-            <tr class="vue-virtual-table-tr">
-              <th class="vue-virtual-table-th vue-virtual-table-th--fixed-left">ID</th>
-              <th class="vue-virtual-table-th">姓名</th>
-              <th class="vue-virtual-table-th">年龄</th>
-              <th class="vue-virtual-table-th">爱好</th>
-              <th class="vue-virtual-table-th">时间</th>
-            </tr>
+          <thead class="vue-virtual-table-thead" data-vt-id={componentId}>
+            {rows.value.map(row => (
+              <tr class="vue-virtual-table-tr">
+                {row.map(({ column, colSpan, rowSpan, isLast }) => {
+                  const key = getColKey(column)
+                  // @ts-ignore
+                  // @ts-ignore
+                  return (
+                    // vue-virtual-table-th--fixed-left
+                    <th
+                      class="vue-virtual-table-th"
+                      key={key}
+                      colspan={colSpan}
+                      rowspan={rowSpan}
+                      data-col-key={key}
+                      style={{
+                        textAlign: column.align
+                        // left: pxfy(fixedColumnLeftMap[key]?.start),
+                        // right: pxfy(fixedColumnRightMap[key]?.start)
+                      }}
+                    >
+                      {renderSlot(slots, column.title!, undefined, () => [column.title])}
+                    </th>
+                  )
+                })}
+              </tr>
+            ))}
           </thead>
         </table>
       </div>

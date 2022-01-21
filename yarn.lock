@@ -6239,6 +6239,11 @@ tr46@^2.1.0:
   dependencies:
     punycode "^2.1.1"
 
+treemate@^0.3.10:
+  version "0.3.10"
+  resolved "https://registry.yarnpkg.com/treemate/-/treemate-0.3.10.tgz#df40ce4c0c1251729b1431c9866134a34949fca5"
+  integrity sha512-uxN98H84/zXAkn02rEeip9SNnOR889QIBXfpZnwjaanp8JRElxjdmDaKmVULclrn54J8RcJVCqfeQZsdeMjwow==
+
 trouter@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/trouter/-/trouter-2.0.1.tgz#2726a5f8558e090d24c3a393f09eaab1df232df6"
