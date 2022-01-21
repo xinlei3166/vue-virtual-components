@@ -2,7 +2,7 @@
   box-sizing: border-box;
   border-radius: 2px;
   width: 100%;
-  &:not(.vue-virtual-table-single-line) {
+  &:not(.vue-virtual-table--single-line) {
     .vue-virtual-table-th,
     .vue-virtual-table-td {
       border-right: 1px solid var(--vt-border-color);
@@ -10,7 +10,7 @@
   }
 }
 
-.vue-virtual-table-bordered {
+.vue-virtual-table--bordered {
   border: 1px solid var(--vt-border-color);
 
   .vue-virtual-table-body .vue-virtual-table-tr:last-child > .vue-virtual-table-td {
@@ -85,11 +85,11 @@
 }
 
 // antd table style
-.vue-virtual-table-antd {
+.vue-virtual-table--antd {
   //
 }
 
 // element table style
-.vue-virtual-table-element {
+.vue-virtual-table--element {
   //
 }

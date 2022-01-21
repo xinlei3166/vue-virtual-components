@@ -1,22 +1,38 @@
-import { TableColumn } from './interface'
+import { CSSProperties } from 'vue'
+import { pxfy } from 'seemly'
+import { TableColumn, SortOrder, SortOrderFlag } from './interface'
 
-// export function getColWidth(col: TableColumn): number | undefined {
-//   if (col.type === 'selection') return selectionColWidth
-//   if (col.type === 'expand') return expandColWidth
-//   if ('children' in col) return undefined
-//   return col.width
-// }
+export const selectionColWidth = 40
+export const expandColWidth = 40
 
-export function getRowSelection(col: TableColumn): string | number {
-  if (col.type === 'selection') return '__n_selection__'
-  return col.key
+export function getColWidth(col: TableColumn): number | undefined {
+  if (col.type === 'selection') return selectionColWidth
+  if (col.type === 'expand') return expandColWidth
+  if ('children' in col) return undefined
+  return col.width
 }
 
 export function getColKey(col: TableColumn): string | number {
-  if (col.type === 'selection') return '__n_selection__'
+  if (col.type === 'selection') return '__vt_selection__'
+  if (col.type === 'expand') return '__vt_expand__'
   return col.key
 }
 
+export function createCustomWidthStyle(column: TableColumn): CSSProperties {
+  const width = pxfy(getColWidth(column))
+  return {
+    width,
+    minWidth: width
+  }
+}
+
+export function getFlagOfOrder(sortOrder: SortOrder): SortOrderFlag {
+  if (sortOrder === 'ascend') return 1
+  else if (sortOrder === 'descend') return -1
+  return 0
+}
+
+// measureScrollbar
 // https://github.com/vueComponent/ant-design-vue/blob/2.x/components/vc-table/src/utils.js
 let scrollbarVerticalSize: any
 let scrollbarHorizontalSize: any

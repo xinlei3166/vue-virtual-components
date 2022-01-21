@@ -1,25 +1,50 @@
-import { defineComponent, ref, VNode } from 'vue'
+import { defineComponent, ref, inject, computed, VNode, PropType } from 'vue'
 import { VirtualList } from 'vueuc'
+import { ColItem } from '../hooks/useGroupHeader'
 import Cell from './Cell'
+import {
+  tableInjectionKey,
+  InternalRowData,
+  RowKey,
+  TmNode
+} from '../interface'
+
+type RowInfo = {
+  striped: boolean
+  tmNode: TmNode
+  key: RowKey
+}
 
 const VirtualListItemWrapper = defineComponent({
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    cols: {
+      type: Array as PropType<ColItem[]>,
+      required: true
+    }
+  },
   setup(props, { slots }) {
     return () => (
       <table class="vue-virtual-table-table">
         <colgroup>
-          <col style={{ minWidth: '200px' }} />
-          <col style={{ minWidth: '200px' }} />
-          <col style={{ minWidth: '200px' }} />
-          <col style={{ minWidth: '200px' }} />
-          <col style={{ minWidth: '200px' }} />
+          {props.cols.map(col => (
+            <col key={col.key} style={col.style} />
+          ))}
         </colgroup>
-        <tbody class="vue-virtual-table-tbody">{slots.default?.()}</tbody>
+        <tbody class="vue-virtual-table-tbody" data-n-id={props.id}>
+          {slots.default?.()}
+        </tbody>
       </table>
     )
   }
 })
 
-const renderRow = (data: any, index: any): VNode => {
+const renderRow = (row: InternalRowData, index: any): VNode => {
+  const { tmNode, key: rowKey } = row
+
   return (
     <tr class="vue-virtual-table-tr">
       <td class="vue-virtual-table-td vue-virtual-table-td--fixed-left">
@@ -37,12 +62,15 @@ const renderRow = (data: any, index: any): VNode => {
       <td class="vue-virtual-table-td">
         <Cell index={index} row={'时间'} column={{}} />
       </td>
+      <td class="vue-virtual-table-td">
+        <Cell index={index} row={'操作'} column={{}} />
+      </td>
     </tr>
   )
 }
 
 export default defineComponent({
-  setup(props, { slots }) {
+  setup(props) {
     const virtualListRef = ref()
 
     const allItems = Array.from(Array(99).keys()).map(i => ({
@@ -50,13 +78,38 @@ export default defineComponent({
       size: i % 2 === 0 ? 'small' : 'large'
     }))
 
+    const {
+      slots,
+      rows,
+      cols,
+      componentId,
+      mergedData: _mergedData
+    } = inject(tableInjectionKey)!
+
+    const mergedData = computed<RowInfo[]>(() => {
+      const striped = false
+      return _mergedData.value.map(
+        (tmNode, index): RowInfo => ({
+          tmNode,
+          key: tmNode.key as RowKey,
+          striped: striped ? index % 2 === 1 : false
+        })
+      )
+    })
+
+    const displayedData = mergedData
+
     return () => (
       <div class="vue-virtual-table-body" style={{ maxHeight: '300px' }}>
         <VirtualList
           ref={virtualListRef}
-          items={allItems}
+          items={displayedData.value}
           itemSize={55}
           visibleItemsTag={VirtualListItemWrapper}
+          visibleItemsProps={{
+            id: componentId,
+            cols
+          }}
           showScrollbar={true}
           itemResizable
         >

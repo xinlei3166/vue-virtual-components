@@ -9,7 +9,6 @@
         :columns="tableColumns"
         :loading="loading"
         :data-source="data"
-        :pagination="false"
         @change="onTableChange"
       ></VirtualTable>
       <a-table

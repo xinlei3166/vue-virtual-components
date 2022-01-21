@@ -1,7 +1,7 @@
 # vue-virtual-table
 
 ## 简介
-
+参考 [Ant Design Vue](https://github.com/vueComponent/ant-design-vue/tree/2.x/components/table) 和 [Naive UI](https://github.com/TuSimple/naive-ui/tree/main/src/data-table)
 vitepress-theme-demoblock 是一个基于 Vitepress 的主题插件，它可以帮助你在编写文档的时候增加 Vue 示例，它的诞生初衷是为了降低编写组件文档时增加一些相关示例的难度。
 
 使用 Vitepress 编写组件示例有以下不足之处：
