@@ -62,17 +62,20 @@ export const tableColumns = [
     title: 'ID',
     key: 'id',
     dataIndex: 'id',
+    width: '64px',
     fixed: 'left'
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    key: 'name',
+    dataIndex: 'hobby',
     fixed: 'left'
   },
   {
     title: '年龄',
     key: 'age',
-    dataIndex: 'age'
+    dataIndex: 'age',
+    width: '64px'
   },
   {
     title: '爱好',
@@ -82,13 +85,15 @@ export const tableColumns = [
   {
     title: '更新时间',
     key: 'updateTime',
-    dataIndex: 'updateTime'
+    dataIndex: 'updateTime',
+    fixed: 'right'
   },
   {
     title: '操作',
     key: 'operation',
     dataIndex: 'operation',
+    width: 120,
     fixed: 'right',
-    slots: { customRender: 'operation' }
+    slots: { customRender: 'operation', title: 'operationTitle' }
   }
 ]

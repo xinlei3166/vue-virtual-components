@@ -1,68 +1,166 @@
-import { defineComponent, CSSProperties, renderSlot, reactive, inject, onMounted } from 'vue'
+import {
+  defineComponent,
+  reactive,
+  inject,
+  ref,
+  computed,
+  watchEffect
+} from 'vue'
+import type { CSSProperties, ComputedRef } from 'vue'
 import { pxfy } from 'seemly'
+import type { TableColumn, ColumnKey } from '../interface'
 import { tableInjectionKey } from '../interface'
-import { measureScrollbar, getColKey } from '../utils'
+import { getColKey } from '../utils'
+import type { RowItem, ColItem } from '../hooks/useGroupHeader'
+
+function useColWidth(
+  colWidthsRef: ComputedRef<number[]>,
+  colCountRef: ComputedRef<number>
+) {
+  return computed(() => {
+    const cloneCols: number[] = []
+    const colWidths = colWidthsRef.value
+    const columCount = colCountRef.value
+    for (let i = 0; i < columCount; i += 1) {
+      const val = colWidths[i]
+      if (val !== undefined) {
+        cloneCols[i] = val
+      } else {
+        return null
+      }
+    }
+    return cloneCols
+  })
+}
 
 export default defineComponent({
   setup(props) {
-    const { slots, rows, cols, componentId } = inject(tableInjectionKey)!
+    const {
+      prefixCls,
+      slots,
+      rows: _rows,
+      cols: _cols,
+      componentId,
+      mergedData,
+      scrollbarSize,
+      hasScrollbar,
+      colWidths,
+      fixedColumnLeftMap,
+      fixedHeaderColumnRightMap,
+      leftActiveFixedColKey,
+      rightActiveFixedColKey,
+      handleTableHeaderScroll
+    } = inject(tableInjectionKey)!
 
-    const headStyle = reactive<CSSProperties>({})
-    const prefixCls = 'vue-virtual-table'
-    const scrollbarWidth = measureScrollbar({ direction: 'vertical' })
-    const scrollbarWidthOfHeader = measureScrollbar({ direction: 'horizontal', prefixCls })
+    const rows = ref<RowItem[][]>([])
+    const cols = ref<ColItem[]>([])
 
-    // Add negative margin bottom for scroll bar overflow bug
-    if (scrollbarWidthOfHeader > 0) {
-      headStyle.marginBottom = `-${scrollbarWidthOfHeader}px`
-      headStyle.paddingBottom = '0px'
-      // https://github.com/ant-design/ant-design/pull/19986
-      headStyle.minWidth = `${scrollbarWidth}px`
-      // https://github.com/ant-design/ant-design/issues/17051
-      headStyle.overflowX = 'scroll'
-      headStyle.overflowY = scrollbarWidth === 0 ? 'hidden' : 'scroll'
-    }
+    watchEffect(() => {
+      const width = pxfy(scrollbarSize.value.width)
+      // 判断hasScrollbar，是否增加占位th。
+      const lastCol = _cols.value[_cols.value.length - 1]
+      const column = {
+        key: `${prefixCls.value}Scrollbar`,
+        fixed: lastCol ? lastCol.column.fixed : null,
+        customHeaderCell: () => ({
+          class: `${prefixCls.value}-th--scrollbar`
+        }),
+        width
+      } as any as TableColumn
 
-    onMounted(() => {
-      if (!scrollbarWidth) return
-      const el = document.querySelector('.v-vl--show-scrollbar') as any
-      const hasScrollbar = el.scrollHeight > el.clientHeight || el.offsetHeight > el.clientHeight
-      headStyle.overflowY = hasScrollbar ? 'scroll' : 'hidden'
+      const tRows = computed(() =>
+        hasScrollbar.value
+          ? ([
+              ..._rows.value[0].slice(),
+              {
+                column,
+                colSpan: 0,
+                rowSpan: 1,
+                isLast: false
+              }
+            ] as RowItem[])
+          : _rows.value[0]
+      )
+
+      rows.value = [tRows.value]
+      cols.value = hasScrollbar.value
+        ? [
+            ..._cols.value,
+            {
+              key: column.key as ColumnKey,
+              style: { width, minWidth: width } as any,
+              column: column
+            }
+          ]
+        : _cols.value
     })
+
+    const colCount = computed(() => _cols.value.length)
+    const _mergedColWidth = useColWidth(colWidths, colCount)
+    const mergedColWidth = computed(() =>
+      _mergedColWidth.value
+        ? [..._mergedColWidth.value, scrollbarSize.value.width]
+        : []
+    )
+    const noData = computed(() => !mergedData.value.length)
 
     return () => (
       <div
-        class={['vue-virtual-table-header', { 'vue-virtual-table-hide-scrollbar': true }]}
-        style={headStyle}
+        class={`${prefixCls.value}-header`}
+        onScroll={handleTableHeaderScroll}
+        style={{ overflow: noData.value ? 'auto' : 'hidden' }}
       >
-        <table class="vue-virtual-table-table">
+        <table
+          class={`${prefixCls.value}-table`}
+          style={{
+            tableLayout: 'fixed',
+            visibility:
+              noData.value || mergedColWidth.value ? undefined : 'hidden'
+          }}
+        >
           <colgroup>
-            {cols.value.map(col => (
-              <col key={col.key} style={col.style}></col>
+            {cols.value.map((col, index) => (
+              <col
+                key={col.key}
+                style={{
+                  ...col.style,
+                  width: pxfy(mergedColWidth.value[index] as any),
+                  minWidth: undefined
+                }}
+              />
             ))}
           </colgroup>
-          <thead class="vue-virtual-table-thead" data-vt-id={componentId}>
+          <thead class={`${prefixCls.value}-thead`} data-vuevt-id={componentId}>
             {rows.value.map(row => (
-              <tr class="vue-virtual-table-tr">
+              <tr class={`${prefixCls.value}-tr`}>
                 {row.map(({ column, colSpan, rowSpan, isLast }) => {
                   const key = getColKey(column)
-                  // @ts-ignore
-                  // @ts-ignore
+                  const slotName = column.slots?.title as string
                   return (
-                    // vue-virtual-table-th--fixed-left
                     <th
-                      class="vue-virtual-table-th"
+                      class={[
+                        `${prefixCls.value}-th`,
+                        column.fixed &&
+                          `${prefixCls.value}-th--fixed-${column.fixed}`,
+                        isLast ? `${prefixCls.value}-th--last` : '',
+                        {
+                          [`${prefixCls.value}-th--fixed-left--last`]:
+                            leftActiveFixedColKey.value === key,
+                          [`${prefixCls.value}-th--fixed-right--last`]:
+                            rightActiveFixedColKey.value === key
+                        }
+                      ]}
                       key={key}
                       colspan={colSpan}
                       rowspan={rowSpan}
                       data-col-key={key}
                       style={{
-                        textAlign: column.align
-                        // left: pxfy(fixedColumnLeftMap[key]?.start),
-                        // right: pxfy(fixedColumnRightMap[key]?.start)
+                        textAlign: column.align,
+                        left: pxfy(fixedColumnLeftMap.value[key]?.start),
+                        right: pxfy(fixedHeaderColumnRightMap.value[key]?.start)
                       }}
                     >
-                      {renderSlot(slots, column.title!, undefined, () => [column.title])}
+                      {slots[slotName] ? slots[slotName]?.() : column.title}
                     </th>
                   )
                 })}

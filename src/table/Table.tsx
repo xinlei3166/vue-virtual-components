@@ -1,39 +1,64 @@
 import {
   defineComponent,
+  provide,
+  ref,
+  computed,
+  watch,
+  nextTick,
+  onMounted,
+  toRefs,
+  watchEffect
+} from 'vue'
+import type {
   PropType,
   ExtractPropTypes,
-  provide,
-  toRef,
-  computed
+  ComputedRef,
+  CSSProperties
 } from 'vue'
-import { createId } from 'seemly'
+import { reactivePick } from '@vueuse/core'
+import { createId, pxfy } from 'seemly'
 import { createTreeMate } from 'treemate'
-import {
+import type {
   TableStyle,
   RowData,
   RowKey,
   CreateRowKey,
   TableColumns,
-  OnHeaderRow,
-  OnRow,
+  ColumnKey,
+  Scroll,
+  Size,
+  TableLayout,
+  CustomHeaderRow,
+  CustomRow,
   Locale,
-  tableInjectionKey,
   InternalRowData,
   OnSort,
-  TmNode
+  TmNode,
+  InternalTableRef,
+  InternalTableHeaderRef,
+  InternalTableBodyRef
 } from '../interface'
+import { tableInjectionKey } from '../interface'
 import { useGroupHeader } from '../hooks/useGroupHeader'
 import { useSorter } from '../hooks/useSorter'
+import { useLayoutState } from '../hooks/useFrame'
+import { useScroll } from '../hooks/useScroll'
 import TableHeader from './Header'
 import TableBody from './Body'
 import '../styles/index.less'
+import {
+  getTargetScrollBarSize,
+  validateValue,
+  isVisible,
+  getColsKey
+} from '../utils'
+
+const prefixCls = ref('vuevt')
 
 export const tableProps = {
-  style: { type: String as PropType<TableStyle>, default: 'antd' },
-  maxHeight: [Number, String] as PropType<string | number>,
+  tableStyle: { type: String as PropType<TableStyle>, default: 'antd' },
   childrenKey: { type: String, default: 'children' },
   bordered: Boolean as PropType<boolean>,
-  singleLine: { type: Boolean, default: true },
   columns: { type: Array as PropType<TableColumns>, default: () => [] },
   data: { type: Array as PropType<RowData[]>, default: () => [] },
   loading: { type: Boolean, default: false },
@@ -49,8 +74,11 @@ export const tableProps = {
     default: 'id'
   },
   rowSelection: Object,
-  onHeaderRow: Function as PropType<OnHeaderRow>,
-  onRow: Function as PropType<OnRow>,
+  scroll: Object as PropType<Scroll>,
+  size: { type: String as PropType<Size>, default: 'default' },
+  tableLayout: { type: String as PropType<TableLayout>, default: 'fixed' },
+  customHeaderRow: Function as PropType<CustomHeaderRow>,
+  customRow: Function as PropType<CustomRow>,
   onSort: Function as PropType<OnSort>
 }
 
@@ -65,6 +93,18 @@ export default defineComponent({
         ? props.rowKey
         : (row: InternalRowData) => row[props.rowKey as string]
     ) as CreateRowKey
+
+    const hasScrollbar = ref<boolean>()
+    const scrollbarSize = ref<{ width: number; height: number }>({
+      width: 0,
+      height: 0
+    })
+
+    onMounted(() => {
+      const el = document.querySelector('.v-vl--show-scrollbar') as any
+      // set scrollbarSize
+      scrollbarSize.value = getTargetScrollBarSize(el)
+    })
 
     // ====================== GroupHeader ======================
     const { rows, cols, relatedCols } = useGroupHeader(props)
@@ -85,8 +125,6 @@ export default defineComponent({
       })
     })
 
-    console.log(treeMate.value)
-
     // ====================== Filter ======================
     const filteredData = computed<TmNode[]>(() => {
       const { treeNodes: data } = treeMate.value
@@ -104,14 +142,180 @@ export default defineComponent({
       filteredData
     })
 
+    watch(mergedData, () => {
+      nextTick(() => {
+        const el = document.querySelector('.v-vl--show-scrollbar') as any
+        hasScrollbar.value =
+          el.scrollHeight > el.clientHeight || el.offsetHeight > el.clientHeight
+      })
+    })
+
+    // ====================== InternalTableRef ======================
+    const tableRef = ref<InternalTableRef>({
+      getHeaderElement,
+      getBodyElement,
+      getTableElement
+    })
+    const headerRef = ref<InternalTableHeaderRef>()
+    const bodyRef = ref<InternalTableBodyRef>()
+
+    function getHeaderElement(): HTMLElement | null {
+      if (headerRef.value) {
+        return headerRef.value.$el
+      }
+      return null
+    }
+
+    function getBodyElement(): HTMLElement | null {
+      if (bodyRef.value) {
+        return bodyRef.value.getScrollContainer()
+      }
+      return null
+    }
+
+    function getTableElement(): HTMLElement | null {
+      if (bodyRef.value) {
+        return bodyRef.value.getScrollContent()
+          ?.firstChild as HTMLElement | null
+      }
+      return null
+    }
+
+    // ====================== Scroll ======================
+    const fixHeader = computed(() => validateValue(props.scroll?.y))
+    const horizonScroll = computed(() => validateValue(props.scroll?.x))
+    const scrollXStyle = ref<CSSProperties>({})
+    const scrollYStyle = ref<CSSProperties>({})
+    const scrollTableStyle = ref<CSSProperties>({})
+    const measureColWidth = computed(
+      () => fixHeader.value || horizonScroll.value
+    )
+    const [colsWidths, updateColsWidths] = useLayoutState(
+      new Map<ColumnKey, number>()
+    )
+
+    // Convert map to number width
+    const colsKeys = computed(() => getColsKey(cols.value.map(c => c.column)))
+    const colWidths = computed(() =>
+      colsKeys.value.map(colKey => colsWidths.value.get(colKey) as number)
+    )
+
+    watchEffect(() => {
+      if (fixHeader.value) {
+        scrollYStyle.value = {
+          maxHeight: pxfy(props.scroll?.y)
+        }
+      }
+
+      if (horizonScroll.value) {
+        scrollXStyle.value = { overflowX: 'auto' }
+        // When no vertical scrollbar, should hide it
+        if (!fixHeader.value) {
+          scrollYStyle.value = { overflowY: 'hidden' }
+        }
+        scrollTableStyle.value = {
+          width:
+            props.scroll?.x === true
+              ? 'auto'
+              : props.scroll?.x === 'max-content'
+              ? 'max-content'
+              : pxfy(props.scroll?.x),
+          minWidth: '100%'
+        }
+      }
+    })
+
+    const selfRef = ref<HTMLDivElement>()
+    const scrollPartRef = ref<'header' | 'body'>('body')
+    const bodyWidth = ref<number | null>(null)
+
+    const {
+      fixedColumnLeftMap,
+      fixedColumnRightMap,
+      fixedHeaderColumnRightMap,
+      leftFixedColumns,
+      rightFixedColumns,
+      leftActiveFixedColKey,
+      leftActiveFixedChildrenColKeys,
+      rightActiveFixedColKey,
+      rightActiveFixedChildrenColKeys,
+      syncScrollState,
+      handleTableBodyScroll,
+      handleTableHeaderScroll
+    } = useScroll(props, {
+      tableRef,
+      scrollPartRef,
+      bodyWidth,
+      hasScrollbar,
+      scrollbarSize,
+      colsWidths,
+      prefixCls
+    })
+
+    const fixedStateInitialized = ref(
+      !(leftFixedColumns.value.length || rightFixedColumns.value.length)
+    )
+
+    const onBodyResize = (entry: ResizeObserverEntry): void => {
+      bodyWidth.value = entry.contentRect.width
+      syncScrollState()
+      if (!fixedStateInitialized.value) {
+        fixedStateInitialized.value = true
+      }
+    }
+
+    const onColResize = (colKey: ColumnKey, width: number) => {
+      if (isVisible(selfRef.value!)) {
+        updateColsWidths(widths => {
+          if (widths.get(colKey) !== width) {
+            const newWidths = new Map(widths)
+            newWidths.set(colKey, width)
+            return newWidths
+          }
+          return widths
+        })
+      }
+    }
+
     // ====================== Provide ======================
+    const propsKeys: any = ['scroll', 'tableLayout']
     provide(tableInjectionKey, {
+      prefixCls,
+      ...toRefs(reactivePick(props, propsKeys)),
       slots,
       componentId: createId(),
       rows,
       cols,
       mergedData,
-      mergedSortState
+      mergedSortState,
+      scrollbarSize,
+      hasScrollbar,
+      // scroll
+      fixHeader,
+      horizonScroll,
+      scrollXStyle,
+      scrollYStyle,
+      scrollTableStyle,
+      measureColWidth,
+      onColResize,
+      colsWidths,
+      colsKeys,
+      colWidths,
+      bodyWidth,
+      scrollPartRef,
+      // useScroll
+      fixedColumnLeftMap,
+      fixedColumnRightMap,
+      fixedHeaderColumnRightMap,
+      leftFixedColumns,
+      rightFixedColumns,
+      leftActiveFixedColKey,
+      leftActiveFixedChildrenColKeys,
+      rightActiveFixedColKey,
+      rightActiveFixedChildrenColKeys,
+      syncScrollState,
+      handleTableBodyScroll,
+      handleTableHeaderScroll
     })
 
     // ====================== Expose ======================
@@ -120,20 +324,23 @@ export default defineComponent({
       clearSorter
     })
 
+    // ====================== Render ======================
     return () => (
       <div
+        ref={selfRef}
         class={[
-          'vue-virtual-table',
-          'vue-virtual-table--' + props.style,
+          prefixCls.value,
+          `${prefixCls.value}--${props.tableStyle}`,
           {
-            'vue-virtual-table--bordered': props.bordered,
-            'vue-virtual-table--single-line': props.singleLine,
-            'vue-virtual-table--fixed-header': true
+            [`${prefixCls.value}--middle`]: props.size === 'middle',
+            [`${prefixCls.value}--small`]: props.size === 'small',
+            [`${prefixCls.value}--bordered`]: props.bordered,
+            [`${prefixCls.value}--fixed-header`]: fixHeader.value
           }
         ]}
       >
-        <TableHeader />
-        <TableBody />
+        <TableHeader ref={headerRef} />
+        <TableBody ref={bodyRef} onResize={onBodyResize} />
       </div>
     )
   }

@@ -1,4 +1,4 @@
-# vue-virtual-table
+# vuevt
 
 ## 简介
 参考 [Ant Design Vue](https://github.com/vueComponent/ant-design-vue/tree/2.x/components/table) 和 [Naive UI](https://github.com/TuSimple/naive-ui/tree/main/src/data-table)

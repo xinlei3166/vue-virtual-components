@@ -1,15 +1,15 @@
-import { ComputedRef, computed, ref } from 'vue'
-import {
+import { computed, ref } from 'vue'
+import type { ComputedRef } from 'vue'
+import type {
   TableColumn,
   TableBaseColumn,
   Sorter,
   SortOrder,
-  RowData,
   SortState,
   ColumnKey,
   TmNode
 } from '../interface'
-import { TableProps } from '../table/Table'
+import type { TableProps } from '../table/Table'
 import { getFlagOfOrder } from '../utils'
 
 function getNextOrder(order: SortOrder): SortOrder {
@@ -56,11 +56,11 @@ export function useSorter(
   const sortState = ref<SortState | null>(null)
 
   if (sortedColumn) {
-    const { key: columnKey, dataIndex: field, sorter, sortOrder } = sortedColumn
+    const { key: columnKey, sorter, sortOrder, dataIndex: field } = sortedColumn
     sortState.value = {
       column: sortedColumn,
       columnKey,
-      field,
+      field: field!,
       order: sortOrder!,
       sorter: sorter!
     }
@@ -89,14 +89,14 @@ export function useSorter(
     )
     if (!column || !column.sorter) return
 
-    const { dataIndex: field, sorter } = column
+    const { sorter } = column
     if (column.type === 'selection' || column.type === 'expand') return
 
     if (sortState.value === null || sortState.value?.columnKey !== columnKey) {
       sortState.value = {
         column,
         columnKey,
-        field,
+        field: column.dataIndex!,
         order: getNextOrder(false),
         sorter
       }

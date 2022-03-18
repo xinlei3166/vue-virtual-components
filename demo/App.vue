@@ -2,15 +2,37 @@
   <div style="padding: 24px">
     <a-card class="card">
       <VirtualTable
+        style="margin-bottom: 60px"
+        class="content"
+        table-style="element"
+        row-key="id"
+        bordered1
+        :columns="tableColumns"
+        :loading="loading"
+        :data="data"
+        :scroll="{ x: 'max-content', y: 400 }"
+        @change="onTableChange"
+      >
+        <template #operation="text, record">
+          <span class="btn" @click="onEdit(record)">编辑</span>
+          <span class="btn" @click="onPreview(record)">预览</span>
+        </template>
+      </VirtualTable>
+      <VirtualTable
         class="content"
         row-key="id"
         bordered1
-        :single-line="true"
         :columns="tableColumns"
         :loading="loading"
-        :data-source="data"
+        :data="data"
+        :scroll="{ x: 'max-content', y: 400 }"
         @change="onTableChange"
-      ></VirtualTable>
+      >
+        <template #operation="text, record">
+          <span class="btn" @click="onEdit(record)">编辑</span>
+          <span class="btn" @click="onPreview(record)">预览</span>
+        </template>
+      </VirtualTable>
       <a-table
         style="margin-top: 40px"
         class="content"
@@ -20,7 +42,7 @@
         :loading="loading"
         :data-source="data"
         :pagination="false"
-        :scroll="{ y: 400 }"
+        :scroll="{ x: 'max-content', y: 400 }"
         @change="onTableChange"
       >
         <template #operation="text, record">
@@ -59,7 +81,7 @@ onBeforeMount(async () => {
 
 async function init() {
   loading.value = true
-  const res = await getData({ pageNum: pagination.current, pageSize: 10 })
+  const res = await getData({ pageNum: pagination.current, pageSize: 20 })
   loading.value = false
   if (res.code !== 0) return
   data.value = res.data

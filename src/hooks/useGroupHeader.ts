@@ -1,5 +1,6 @@
-import { CSSProperties, ComputedRef, computed } from 'vue'
-import { TableProps } from '../table/Table'
+import { computed } from 'vue'
+import type { CSSProperties, ComputedRef } from 'vue'
+import type { TableProps } from '../table/Table'
 import type { TableColumn, TableColumns } from '../interface'
 import { getColKey, createCustomWidthStyle } from '../utils'
 

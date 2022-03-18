@@ -1,20 +1,23 @@
 {
-  "name": "vue-virtual-table",
+  "name": "vuevt",
   "version": "0.1.0",
   "description": "vue-virtual-table",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xinlei3166/vue-virtual-table"
+    "url": "https://github.com/xinlei3166/vuevt"
   },
   "keywords": [
-    "vitepress",
-    "vue",
-    "theme"
+    "ant-design-vue",
+    "element-plus",
+    "virtual-table",
+    "virtual",
+    "table",
+    "vue"
   ],
   "bugs": {
-    "url": "https://github.com/xinlei3166/vue-virtual-table/issues"
+    "url": "https://github.com/xinlei3166/vuevt/issues"
   },
-  "homepage": "https://github.com/xinlei3166/vue-virtual-table#readme",
+  "homepage": "https://github.com/xinlei3166/vuevt#readme",
   "author": "君惜",
   "license": "MIT",
   "bin": {
@@ -22,11 +25,7 @@
     "vitepress-rc": "bin/vitepress-register-components.js"
   },
   "files": [
-    "ant-design-vue",
-    "virtual-table",
-    "virtual",
-    "table",
-    "vue"
+    "dist"
   ],
   "main": "demoblock/index.js",
   "scripts": {
@@ -42,12 +41,15 @@
   },
   "dependencies": {
     "@css-render/vue3-ssr": "^0.15.8",
-    "ant-design-vue": "^2.2.1",
+    "@vueuse/core": "^8.1.1",
+    "ant-design-vue": "^3.0.0-beta.10",
+    "lodash-es": "^4.17.21",
     "treemate": "^0.3.10",
     "vue": "^3.2.0",
     "vueuc": "^0.4.19"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
     "@types/mockjs": "^1.0.3",
     "@types/node": "^14.14.39",
     "@types/qs": "^6.9.6",
