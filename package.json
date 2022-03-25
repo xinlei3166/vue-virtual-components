@@ -1,6 +1,6 @@
 {
   "name": "vuevt",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.0",
   "description": "vue-virtual-table",
   "repository": {
     "type": "git",
@@ -58,6 +58,7 @@
     "@vue/compiler-sfc": "^3.2.0",
     "@yunquejs/fabric": "^0.1.2",
     "@yunquejs/release": "^0.1.4",
+    "conventional-changelog-cli": "^2.1.1",
     "axios": "^0.24.0",
     "jest": "^26.1.0",
     "less": "^4.1.2",
