@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 24px">
     <a-card class="card">
-      <VirtualTable
+      <VirtualTableElement
         style="margin-bottom: 60px"
         class="content"
         table-style="element"
@@ -17,8 +17,8 @@
           <span class="btn" @click="onEdit(record)">编辑</span>
           <span class="btn" @click="onPreview(record)">预览</span>
         </template>
-      </VirtualTable>
-      <VirtualTable
+      </VirtualTableElement>
+      <AntdVirtualTable
         class="content"
         row-key="id"
         bordered1
@@ -32,7 +32,7 @@
           <span class="btn" @click="onEdit(record)">编辑</span>
           <span class="btn" @click="onPreview(record)">预览</span>
         </template>
-      </VirtualTable>
+      </AntdVirtualTable>
       <a-table
         style="margin-top: 40px"
         class="content"
@@ -56,7 +56,8 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount } from 'vue'
-import VirtualTable from '../src'
+import AntdVirtualTable from '../src/antd'
+import VirtualTableElement from '../src/element'
 import { tableColumns } from './columns'
 import { getData } from './api'
 
@@ -81,11 +82,13 @@ onBeforeMount(async () => {
 
 async function init() {
   loading.value = true
-  const res = await getData({ pageNum: pagination.current, pageSize: 20 })
-  loading.value = false
-  if (res.code !== 0) return
-  data.value = res.data
-  pagination.total = res.total
+  setTimeout(async () => {
+    const res = await getData({ pageNum: pagination.current, pageSize: 20 })
+    loading.value = false
+    if (res.code !== 0) return
+    data.value = res.data
+    pagination.total = res.total
+  }, 2000)
 }
 
 async function onSearch() {

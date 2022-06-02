@@ -85,8 +85,7 @@ export const tableColumns = [
   {
     title: '更新时间',
     key: 'updateTime',
-    dataIndex: 'updateTime',
-    fixed: 'right'
+    dataIndex: 'updateTime'
   },
   {
     title: '操作',

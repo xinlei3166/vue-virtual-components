@@ -9,12 +9,7 @@ import {
   toRefs,
   watchEffect
 } from 'vue'
-import type {
-  PropType,
-  ExtractPropTypes,
-  ComputedRef,
-  CSSProperties
-} from 'vue'
+import type { PropType, ExtractPropTypes, CSSProperties } from 'vue'
 import { reactivePick } from '@vueuse/core'
 import { createId, pxfy } from 'seemly'
 import { createTreeMate } from 'treemate'
@@ -111,11 +106,10 @@ export default defineComponent({
 
     // ====================== TreeMate ======================
     const treeMate = computed(() => {
-      const { childrenKey } = props
       return createTreeMate<InternalRowData>(props.data, {
         ignoreEmptyChildren: true,
         getKey: getRowKey,
-        getChildren: rowData => rowData[childrenKey],
+        getChildren: rowData => rowData[props.childrenKey],
         getDisabled: rowData => {
           // if (selectionColumn.value?.disabled?.(rowData)) {
           //   return true
