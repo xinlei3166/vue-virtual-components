@@ -1,19 +1,18 @@
 {
-  "name": "vuevt",
-  "version": "0.1.0-alpha.1",
-  "description": "vuevt",
+  "name": "vuevc",
+  "version": "0.1.0-alpha.0",
+  "description": "vuevc",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xinlei3166/vuevt"
+    "url": "https://github.com/xinlei3166/vuevc"
   },
   "keywords": [
-    "virtual",
     "vue"
   ],
   "bugs": {
-    "url": "https://github.com/xinlei3166/vuevt/issues"
+    "url": "https://github.com/xinlei3166/vuevc/issues"
   },
-  "homepage": "https://github.com/xinlei3166/vuevt#readme",
+  "homepage": "https://github.com/xinlei3166/vuevc#readme",
   "author": "君惜",
   "license": "MIT",
   "bin": {
