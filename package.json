@@ -1,17 +1,13 @@
 {
   "name": "vuevt",
   "version": "0.1.0-alpha.0",
-  "description": "vue-virtual-table",
+  "description": "vuevt",
   "repository": {
     "type": "git",
     "url": "https://github.com/xinlei3166/vuevt"
   },
   "keywords": [
-    "ant-design-vue",
-    "element-plus",
-    "virtual-table",
     "virtual",
-    "table",
     "vue"
   ],
   "bugs": {
