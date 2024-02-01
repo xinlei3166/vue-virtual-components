@@ -1,0 +1,34 @@
+{
+  "name": "@vue-virtual-components/playground",
+  "private": true,
+  "version": "0.1.0",
+  "description": "@vue-virtual-components/playground",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinlei3166/vue-virtual-components",
+    "directory": "playground"
+  },
+  "keywords": [
+    "vue",
+    "playground",
+    "virtual-component"
+  ],
+  "author": "君惜",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "serve": "vite preview --host"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^6.1.0",
+    "ant-design-vue": "^3.2.20",
+    "axios": "^1.6.5",
+    "element-plus": "^2.5.1",
+    "@element-plus/icons-vue": "^2.3.1",
+    "qs": "^6.11.2",
+    "vue": "^3.4.13",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {}
+}

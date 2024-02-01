@@ -1,9 +1,17 @@
 :root {
-  --c-brand: #08979c;
-  --c-brand-light: #13c2c2;
+  --vp-c-brand: #08979c;
+  --vp-c-brand-light: #23a8a8;
+  --vp-c-brand-lighter: #43b5b1;
+  --vp-c-brand-lightest: #67c2bc;
+  --vp-c-brand-dark: #006d75;
+  --vp-c-brand-darker: #00474f;
 }
 
-html.dark {
-  --c-brand: #08979c;
-  --c-brand-light: #13c2c2;
+:root {
+  --vp-c-brand: #1ed8af;
+  --vp-c-brand-light: #45e6bd;
+  --vp-c-brand-lighter: #6ff2cd;
+  --vp-c-brand-lightest: #9effe0;
+  --vp-c-brand-dark: #10b395;
+  --vp-c-brand-darker: #068c78;
 }

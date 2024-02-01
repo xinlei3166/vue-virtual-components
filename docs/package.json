@@ -1,0 +1,27 @@
+{
+  "name": "@vue-virtual-components/docs",
+  "private": true,
+  "version": "0.1.0",
+  "description": "@vue-virtual-components/docs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinlei3166/vue-virtual-components",
+    "directory": "docs"
+  },
+  "keywords": [
+    "vue",
+    "docs",
+    "virtual-component"
+  ],
+  "author": "君惜",
+  "license": "MIT",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:serve": "vitepress serve"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.36"
+  }
+}

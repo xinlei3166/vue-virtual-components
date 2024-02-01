@@ -1,10 +1,10 @@
 export default {
   lang: 'en-US',
-  title: 'vue-virtual-table',
-  description: 'vue-virtual-table',
+  title: 'yunque',
+  description: 'Simple scaffolding tools.',
 
   themeConfig: {
-    repo: 'xinlei3166/vue-virtual-table',
+    repo: 'yunquejs/yunque',
     docsDir: 'docs',
     docsBranch: 'main',
     editLinks: true,
@@ -23,6 +23,10 @@ export default {
 
 function getGuideSidebar() {
   return [
-    { text: 'What is yunque?', link: '/' }
+    { text: 'What is yunque?', link: '/' },
+    { text: '@yunquejs/cli', link: '/cli' },
+    { text: '@yunquejs/release', link: '/release' },
+    { text: '@yunquejs/fabric', link: '/fabric' },
   ]
 }
+

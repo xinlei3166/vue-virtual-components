@@ -1,0 +1,33 @@
+{
+  "name": "@vue-virtual-components/utils",
+  "version": "0.1.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinlei3166/vue-virtual-components",
+    "directory": "packages/utils"
+  },
+  "keywords": [
+    "utils",
+    "virtual-component"
+  ],
+  "author": "君惜",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "build": "unbuild",
+    "stub": "unbuild --stub"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

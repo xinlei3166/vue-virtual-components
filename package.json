@@ -1,84 +1,84 @@
 {
-  "name": "vuevc",
-  "version": "0.1.0-alpha.0",
-  "description": "vuevc",
+  "name": "vue-virtual-components",
+  "version": "1.0.0",
+  "description": "vue-virtual-components",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/xinlei3166/vuevc"
+    "url": "https://github.com/xinlei3166/vue-virtual-components"
   },
   "keywords": [
-    "vue"
+    "vue",
+    "virtual-component"
   ],
   "bugs": {
-    "url": "https://github.com/xinlei3166/vuevc/issues"
+    "url": "https://github.com/xinlei3166/vue-virtual-components/issues"
   },
-  "homepage": "https://github.com/xinlei3166/vuevc#readme",
+  "homepage": "https://github.com/xinlei3166/vue-virtual-components#readme",
   "author": "君惜",
   "license": "MIT",
-  "bin": {
-    "vitepress-register-components": "bin/vitepress-register-components.js",
-    "vitepress-rc": "bin/vitepress-register-components.js"
-  },
-  "files": [
-    "dist"
-  ],
-  "main": "demoblock/index.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs",
-    "test": "jest",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "simple-git-hooks",
+    "test": "vitest",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue",
     "release": "yunque-release --skipBuild",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
-  "dependencies": {
-    "@ant-design/icons-vue": "^6.1.0",
-    "@css-render/vue3-ssr": "^0.15.8",
-    "@element-plus/icons-vue": "^1.1.4",
-    "@vueuse/core": "^8.1.1",
-    "lodash-es": "^4.17.21",
-    "treemate": "^0.3.10",
-    "vue": "^3.2.0",
-    "vueuc": "^0.4.19"
-  },
   "devDependencies": {
-    "@types/lodash-es": "^4.17.6",
-    "@types/mockjs": "^1.0.3",
-    "@types/node": "^14.14.39",
-    "@types/qs": "^6.9.6",
-    "@vitejs/plugin-vue": "^1.9.0",
-    "@vitejs/plugin-vue-jsx": "^1.3.3",
-    "@vue/compiler-sfc": "^3.2.0",
+    "@types/mockjs": "^1.0.10",
+    "@types/node": "^20.11.1",
+    "@types/qs": "^6.9.11",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "@vue-virtual-components/table": "workspace:*",
+    "@vue-virtual-components/utils": "workspace:*",
     "@yunquejs/fabric": "^0.1.5",
-    "@yunquejs/release": "^0.1.8",
-    "ant-design-vue": "^3.1.0",
-    "axios": "^0.24.0",
-    "conventional-changelog-cli": "^2.1.1",
-    "element-plus": "^2.1.8",
-    "jest": "^26.1.0",
-    "less": "^4.1.2",
-    "lint-staged": "^10.5.4",
+    "@yunquejs/release": "^0.1.9",
+    "consola": "^3.2.3",
+    "conventional-changelog-cli": "^4.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-vue": "^9.20.1",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^9.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-header": "^2.0.9",
+    "gulp-less": "^5.0.0",
+    "gulp-rename": "^2.0.0",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.4",
+    "lint-staged": "^15.2.0",
     "mockjs": "^1.1.0",
-    "qs": "^6.10.2",
-    "typescript": "^4.2.3",
-    "unplugin-auto-import": "^0.6.9",
-    "unplugin-vue-components": "^0.18.5",
-    "vite": "^2.9.1",
-    "vitepress": "^0.16.1"
+    "npm-run-all": "^4.1.5",
+    "picocolors": "latest",
+    "prettier": "^3.2.2",
+    "rimraf": "^5.0.5",
+    "simple-git-hooks": "latest",
+    "tsx": "latest",
+    "typescript": "^5.3.3",
+    "unbuild": "^2.0.0",
+    "unplugin-auto-import": "^0.17.5",
+    "unplugin-vue-components": "^0.26.0",
+    "unplugin-vue-jsx": "^0.2.2",
+    "vite": "^5.0.11",
+    "vite-plugin-html": "^3.2.1",
+    "vite-plugin-style-import": "^2.0.0",
+    "vitest": "^1.2.0",
+    "vue-eslint-parser": "^9.4.0"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged",
-    "commit-msg": "verify-commit"
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged --concurrent false",
+    "commit-msg": "pnpm exec tsx scripts/verifyCommit.ts $1"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,vue}": [
-      "eslint --fix"
-    ]
+    "*.{js,jsx,ts,tsx,vue}": []
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   }
 }

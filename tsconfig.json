@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "CommonJS",
+    "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
@@ -9,20 +9,14 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowJs": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "lib": ["esnext", "dom"],
-    "types": ["node", "vite/client"]
+    "types": ["vite/client", "node", "vue"]
 //    "baseUrl": ".",
 //    "paths": {
 //      "@/*": ["./src/*"]
 //    }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "auto-imports.d.ts"
-  ],
+  "include": ["packages/**/*.ts", "packages/**/*.d.ts", "packages/**/*.tsx", "packages/**/*.vue"],
   "exclude": ["node_modules"]
 }

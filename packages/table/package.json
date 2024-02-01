@@ -1,0 +1,49 @@
+{
+  "name": "@vue-virtual-components/table",
+  "version": "0.1.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinlei3166/vue-virtual-components",
+    "directory": "packages/core-table"
+  },
+  "keywords": [
+    "vue",
+    "table",
+    "virtual-component"
+  ],
+  "author": "君惜",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./dist/*": "./dist/*",
+    "./dist/styles": "./dist/styles"
+  },
+  "scripts": {
+    "stub": "pnpm clean && unbuild --stub && build:style",
+    "build": "pnpm clean && run-p build:*",
+    "build:bundle": "unbuild",
+    "build:style": "gulp --gulpfile scripts/build-style.js",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@css-render/vue3-ssr": "^0.15.12",
+    "@vueuse/core": "^10.7.2",
+    "lodash-es": "^4.17.21",
+    "treemate": "^0.3.11",
+    "seemly": "^0.3.8",
+    "vue": "^3.4.13",
+    "vueuc": "^0.4.58"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12"
+  }
+}

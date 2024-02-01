@@ -43,6 +43,15 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/no-unused-vars': 1,
     '@typescript-eslint/no-var-requires': 0,
-    '@typescript-eslint/consistent-type-imports': 1
+    '@typescript-eslint/consistent-type-imports': 1,
+    // vue
+    'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }],
+    'vue/html-self-closing': 0,
+    'vue/no-use-v-if-with-v-for': 2,
+    'vue/html-closing-bracket-newline': 0,
+    'vue/max-attributes-per-line': 0,
+    'vue/no-unused-components': 1,
+    'vue/no-mutating-props': 0,
+    'vue/multi-word-component-names': 0
   }
 }
