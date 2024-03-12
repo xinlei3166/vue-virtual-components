@@ -1,0 +1,47 @@
+@import './color/colorPalette';
+
+// ====================== Vars ======================
+// prefixCls
+@vuevct-prefixCls: vuevct;
+@vuevct-tablePrefixCls: ~'@{vuevct-prefixCls}-table';
+
+// border
+@vuevct-border-radius: 6px;
+@vuevct-border-radius-sm: 4px;
+
+// ====================== Color ======================
+// Primary Color
+@vuevct-primary-color: #1677ff;
+@vuevct-primary-color-1: color(~`colorPalette('@{vuevct-primary-color}', 1)`);
+@vuevct-primary-color-2: color(~`colorPalette('@{vuevct-primary-color}', 2)`);
+@vuevct-primary-color-5: color(~`colorPalette('@{vuevct-primary-color}', 5)`);
+@vuevct-primary-color-7: color(~`colorPalette('@{vuevct-primary-color}', 7)`);
+
+// Error Color
+@vuevct-error-color: #ff4d4f;
+@vuevct-error-color-1: color(~`colorPalette('@{vuevct-error-color}', 1)`);
+
+// ====================== Table ======================
+// background colors
+@vuevct-table-bg-header-color: #fafafa;
+@vuevct-table-bg-header-color-hover: #f0f0f0;
+@vuevct-table-bg-color: #fff;
+@vuevct-table-bg-color-selected: @vuevct-primary-color-1;
+@vuevct-table-bg-highlight-color: #fafafa;
+@vuevct-table-bg-highlight-color-selected: @vuevct-primary-color-2;
+
+// border colors
+@vuevct-table-border-color: #f0f0f0;
+
+// text colors
+@vuevct-table-text-table-color: rgba(0, 0, 0, 0.85);
+@vuevct-table-text-header-color: rgba(0, 0, 0, 0.85);
+@vuevct-table-icon-header-color: rgba(0, 0, 0, 0.29);
+@vuevct-table-icon-header-color-hover: rgba(0, 0, 0, 0.57);
+
+// box-shadow
+@vuevct-table-box-shadow-before: inset -10px 0 8px -8px rgb(0 0 0 / 15%);
+@vuevct-table-box-shadow-after: inset 10px 0 8px -8px rgb(0 0 0 / 15%);
+
+// transition
+@vuevct-table-bezier: cubic-bezier(0.4, 0, 0.2, 1);

@@ -7,12 +7,12 @@ const router = useRouter()
 const tabs: Array<Record<string, any>> = [
   {
     title: '虚拟表格',
-    link: '/source-dev'
+    link: '/dev1'
   }
 ]
 const activeTab = ref(tabs[0].title)
 
-const links = ['/source-dev', '/antd-style', '/element-style', '/antd-table']
+const links = ['/dev1', '/dev2', '/table', '/antdv']
 const activePath = computed(() => router.currentRoute.value.path)
 </script>
 

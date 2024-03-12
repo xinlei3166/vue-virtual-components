@@ -69,29 +69,39 @@ export const tableColumns: any[] = [
     title: '姓名',
     key: 'name',
     dataIndex: 'name',
-    width: 74,
-    fixed: 'left'
+    width: 80,
+    fixed: 'left',
+    sorter: true
   },
   {
     title: '年龄',
     key: 'age',
     dataIndex: 'age',
-    width: 64
+    width: 80,
+    sorter: true
   },
   {
     title: '性别',
     key: 'gender',
-    width: 64
+    width: 80,
+    sorter: {
+      compare: (a, b) => a.gender - b.gender
+    }
   },
   {
     title: '喜欢',
-    key: 'hobby',
-    dataIndex: 'hobby'
+    key: 'hobby1',
+    dataIndex: 'hobby',
+    width: 400,
+    sorter: {
+      compare: (a, b) => a.age - b.age
+    }
   },
   {
     title: '爱好',
-    key: 'hobby',
-    dataIndex: 'hobby'
+    key: 'hobby2',
+    dataIndex: 'hobby',
+    width: 400
   },
   {
     title: '更新时间',

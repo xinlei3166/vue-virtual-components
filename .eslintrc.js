@@ -52,6 +52,7 @@ module.exports = {
     'vue/max-attributes-per-line': 0,
     'vue/no-unused-components': 1,
     'vue/no-mutating-props': 0,
-    'vue/multi-word-component-names': 0
+    'vue/multi-word-component-names': 0,
+    'vue/require-default-prop': 0
   }
 }

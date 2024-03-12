@@ -16,7 +16,7 @@
   "author": "君惜",
   "license": "MIT",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --port 6001",
     "build": "vite build",
     "serve": "vite preview --host"
   },

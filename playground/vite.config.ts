@@ -1,12 +1,10 @@
 import { loadEnv, defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import jsx from '@vitejs/plugin-vue-jsx'
-import {
-  createStyleImportPlugin,
-  AndDesignVueResolve
-} from 'vite-plugin-style-import'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 
 export default ({ mode, command }: any) => {
@@ -34,7 +32,9 @@ export default ({ mode, command }: any) => {
       preprocessorOptions: {
         less: {
           javascriptEnabled: true,
-          modifyVars: {},
+          modifyVars: {
+            'primary-color': '#1677ff'
+          },
           additionalData: `@import "@/styles/theme.less";`
         }
       }
@@ -46,6 +46,13 @@ export default ({ mode, command }: any) => {
         imports: ['vue', 'vue-router'],
         dts: false
       }),
+      Components({
+        resolvers: [
+          AntDesignVueResolver({
+            importStyle: 'less'
+          })
+        ]
+      }),
       createHtmlPlugin({
         // inject: {
         //   data: {
@@ -53,9 +60,6 @@ export default ({ mode, command }: any) => {
         //     injectScript: `<script src="./inject.js"></script>`
         //   }
         // }
-      }),
-      createStyleImportPlugin({
-        resolves: [AndDesignVueResolve()]
       })
     ],
     base: env.VITE_APP_BASE || '/',

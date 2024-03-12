@@ -3,9 +3,9 @@ import qs from 'qs'
 import { getUserMenu, getPermissions, getUserinfo, login, logout } from './user'
 import { getList } from './data'
 
-Mock.setup({
-  timeout: 300
-})
+// Mock.setup({
+//   timeout: 300
+// })
 
 // 拦截ajax请求，配置mock的数据
 Mock.mock(RegExp('/api/mock/data/list' + '.*'), 'get', getList)

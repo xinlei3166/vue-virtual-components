@@ -11,36 +11,36 @@ const routes: RouteRecordRaw[] = [
     redirect: { name: 'source-dev' }
   },
   {
-    path: '/source-dev',
-    name: 'source-dev',
+    path: '/dev1',
+    name: 'dev1',
     meta: {
-      title: 'source-dev'
+      title: 'dev1'
     },
-    component: () => import('@/views/source-dev.vue')
+    component: () => import('@/views/dev1.vue')
   },
   {
-    path: '/antd-style',
-    name: 'antd-style',
+    path: '/dev2',
+    name: 'dev2',
     meta: {
-      title: 'antd-style'
+      title: 'dev2'
     },
-    component: () => import('@/views/antd-style.vue')
+    component: () => import('@/views/dev2.vue')
   },
   {
-    path: '/element-style',
-    name: 'element-style',
+    path: '/table',
+    name: 'table',
     meta: {
-      title: 'element-style'
+      title: 'table'
     },
-    component: () => import('@/views/element-style.vue')
+    component: () => import('@/views/table.vue')
   },
   {
-    path: '/antd-table',
-    name: 'antd-table',
+    path: '/antdv',
+    name: 'antdv',
     meta: {
-      title: 'antd-table'
+      title: 'antdv'
     },
-    component: () => import('@/views/antd-table.vue')
+    component: () => import('@/views/antdv.vue')
   }
 ]
 

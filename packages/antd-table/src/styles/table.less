@@ -1,0 +1,269 @@
+@import './vars';
+
+.@{vuevct-tablePrefixCls} {
+  box-sizing: border-box;
+  border-radius: 2px;
+  width: 100%;
+  font-variant: tabular-nums;
+  font-feature-settings: "tnum";
+  color: @vuevct-table-text-table-color;
+  //&:not(.@{vuevct-tablePrefixCls}--single-line) {
+  //  .@{vuevct-tablePrefixCls}-th,
+  //  .@{vuevct-tablePrefixCls}-td {
+  //    border-right: 1px solid @vuevct-table-border-color;
+  //  }
+  //}
+}
+
+.@{vuevct-tablePrefixCls}--middle {
+  .@{vuevct-tablePrefixCls}-th,
+  .@{vuevct-tablePrefixCls}-td {
+    padding: 12px 8px;
+  }
+}
+
+.@{vuevct-tablePrefixCls}--small {
+  .@{vuevct-tablePrefixCls}-th,
+  .@{vuevct-tablePrefixCls}-td {
+    padding: 8px;
+  }
+}
+
+.@{vuevct-tablePrefixCls}--bordered {
+  border: 1px solid @vuevct-table-border-color;
+
+  .@{vuevct-tablePrefixCls}-th,
+  .@{vuevct-tablePrefixCls}-td {
+    border-right: 1px solid @vuevct-table-border-color;
+  }
+
+  .@{vuevct-tablePrefixCls}-body .@{vuevct-tablePrefixCls}-tr:last-child > .@{vuevct-tablePrefixCls}-td {
+    border-bottom: 0;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-header {
+  width: 100%;
+}
+
+.@{vuevct-tablePrefixCls}-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.@{vuevct-tablePrefixCls}-th,
+.@{vuevct-tablePrefixCls}-td {
+  position: relative;
+  padding: 16px;
+  overflow-wrap: break-word;
+  text-align: start;
+  border-bottom: 1px solid @vuevct-table-border-color;
+}
+
+.@{vuevct-tablePrefixCls}-th--fixed-left, .@{vuevct-tablePrefixCls}-td--fixed-left {
+  position: sticky !important;
+  z-index: 2;
+  left: 0;
+
+  &::after {
+    pointer-events: none;
+    content: "";
+    width: 36px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    transition: box-shadow .2s @vuevct-table-bezier;
+    right: -36px;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-th--fixed-left--last, .@{vuevct-tablePrefixCls}-td--fixed-left--last {
+  &::before {
+    background-color: transparent !important;
+  }
+
+  &::after {
+    box-shadow: @vuevct-table-box-shadow-after;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-th--fixed-right, .@{vuevct-tablePrefixCls}-td--fixed-right {
+  position: sticky;
+  z-index: 2;
+  left: 0;
+
+  &::after {
+    pointer-events: none;
+    content: "";
+    width: 36px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    transition: box-shadow .2s @vuevct-table-bezier;
+    left: -36px;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-th--fixed-right--last, .@{vuevct-tablePrefixCls}-td--fixed-right--last {
+  &::after {
+    box-shadow: @vuevct-table-box-shadow-before;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-th {
+  color: @vuevct-table-text-header-color;
+  font-weight: 500;
+  background: @vuevct-table-bg-header-color;
+  transition: background 0.3s ease;
+
+  &:last-child {
+    border-right: 0 !important;
+  }
+
+  &.@{vuevct-tablePrefixCls}-th--selection {
+    padding-right: 8px;
+    padding-left: 8px;
+    text-align: center;
+    z-index: 3;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-th--last {
+  border-right: 0 !important;
+}
+
+.@{vuevct-tablePrefixCls}-th--title-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  max-width: 100%;
+}
+.@{vuevct-tablePrefixCls}-th--title {
+  flex: 1;
+  min-width: 0;
+}
+
+.@{vuevct-tablePrefixCls}-tr {
+  &:hover .@{vuevct-tablePrefixCls}-td, .@{vuevct-tablePrefixCls}-td--hover {
+    background: @vuevct-table-bg-highlight-color;
+  }
+
+  & .@{vuevct-tablePrefixCls}-td:last-child {
+    border-right: 0 !important;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-tr.@{vuevct-tablePrefixCls}-tr-selected {
+  .@{vuevct-tablePrefixCls}-td {
+    background: @vuevct-table-bg-color-selected;
+  }
+
+  &:hover .@{vuevct-tablePrefixCls}-td {
+    background: @vuevct-table-bg-highlight-color-selected;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-td {
+  background: @vuevct-table-bg-color;
+  transition: background 0.3s;
+  &.@{vuevct-tablePrefixCls}-td--selection {
+    padding-right: 8px;
+    padding-left: 8px;
+    text-align: center;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-selection {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  .@{vuevct-tablePrefixCls}-selection-extra {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-inline-start: 100%;
+    padding-inline-start: 4px;
+  }
+  .@{vuevct-tablePrefixCls}-selection-extra .anticon {
+    color: @vuevct-table-icon-header-color;
+    font-size: 12px;
+    vertical-align: baseline;
+  }
+  .@{vuevct-tablePrefixCls}-selection-extra:hover .anticon {
+    color: @vuevct-table-icon-header-color-hover;
+  }
+}
+
+.@{vuevct-tablePrefixCls}-th--sortable.@{vuevct-tablePrefixCls}-th {
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover, &.@{vuevct-tablePrefixCls}-th--hover {
+    background: @vuevct-table-bg-header-color-hover;
+  }
+  &:hover::before,  &.@{vuevct-tablePrefixCls}-th--hover::before {
+    background-color: transparent !important;
+  }
+  &:hover .@{vuevct-tablePrefixCls}-sorter {
+    color: @vuevct-table-icon-header-color-hover;
+  }
+}
+.@{vuevct-tablePrefixCls}-sorter {
+  margin-inline-start: 4px;
+  color: @vuevct-table-icon-header-color;
+  font-size: 0;
+  transition: color 0.3s;
+  &.@{vuevct-tablePrefixCls}-sorter-full {}
+  .@{vuevct-tablePrefixCls}-sorter-inner {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .@{vuevct-tablePrefixCls}-sorter--asc, .@{vuevct-tablePrefixCls}-sorter--desc {
+    font-size: 12px;
+    &.active {
+      color: @vuevct-primary-color;
+    }
+  }
+
+  .@{vuevct-tablePrefixCls}-sorter--asc + .@{vuevct-tablePrefixCls}-sorter--desc {
+    margin-top: -0.3em;
+  }
+}
+
+.@{vuevct-tablePrefixCls}--bordered .@{vuevct-tablePrefixCls}-empty {
+  border-bottom: none;
+}
+.@{vuevct-tablePrefixCls}-empty {
+  padding: 16px;
+  border-bottom: 1px solid @vuevct-table-border-color;
+}
+
+// default antd table style
+.@{vuevct-tablePrefixCls}--antd {
+  .@{vuevct-tablePrefixCls}-tr :not(.@{vuevct-tablePrefixCls}-th--selection):not(.@{vuevct-tablePrefixCls}-th--last):not(.@{vuevct-tablePrefixCls}-th--scrollbar).@{vuevct-tablePrefixCls}-th::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 1px;
+    height: 1.6em;
+    background-color: #0000000f;
+    transform: translateY(-50%);
+    transition: background-color .3s;
+  }
+}
+
+.@{vuevct-tablePrefixCls}--antd2 {
+  @vuevct-table-bg-highlight-color: @vuevct-primary-color-1;
+
+  .@{vuevct-tablePrefixCls}-tr :not(.@{vuevct-tablePrefixCls}-th--last):not(.@{vuevct-tablePrefixCls}-th--scrollbar).@{vuevct-tablePrefixCls}-th::before {
+    content: unset;
+  }
+}
