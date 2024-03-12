@@ -236,7 +236,6 @@ const Table = defineComponent({
     })
 
     const selfRef = ref<HTMLDivElement>()
-    const scrollPartRef = ref<'header' | 'body'>('body')
     const bodyWidth = ref<number | null>(null)
 
     const {
@@ -254,7 +253,6 @@ const Table = defineComponent({
       handleTableHeaderScroll
     } = useScroll(props, {
       tableRef,
-      scrollPartRef,
       bodyWidth,
       hasScrollbar,
       scrollbarSize,
@@ -342,7 +340,6 @@ const Table = defineComponent({
       colsKeys,
       colWidths,
       bodyWidth,
-      scrollPartRef,
 
       // useScroll
       fixedColumnLeftMap,
@@ -367,7 +364,10 @@ const Table = defineComponent({
     // ====================== Expose ======================
     expose({
       sort,
-      clearSorter
+      clearSorter,
+      scrollTo: (arg0: any, arg1?: any) => {
+        selfRef.value?.scrollTo(arg0, arg1)
+      }
     })
 
     // ====================== Render ======================

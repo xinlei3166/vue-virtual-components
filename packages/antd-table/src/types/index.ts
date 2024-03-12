@@ -317,7 +317,6 @@ export type TableInjection = {
   colsKeys: ComputedRef<ColumnKey[]>
   colWidths: ComputedRef<number[]>
   bodyWidth: Ref<number | null>
-  scrollPartRef: Ref<'header' | 'body'>
 
   // useScroll
   fixedColumnLeftMap: ComputedRef<
@@ -371,15 +370,22 @@ export type OnUpdateSorterImpl = (
   sortState: SortState | SortState[] | null
 ) => void
 
+export interface ScrollTo {
+  (x: number, y: number): void
+  (options: { left?: number; top?: number; behavior?: ScrollBehavior }): void
+}
+
 export type InternalTableRef = {
   getHeaderElement: () => HTMLElement | null
   getBodyElement: () => HTMLElement | null
   getTableElement: () => HTMLElement | null
+  scrollTo: ScrollTo
 }
 
 export interface InternalTableBodyRef {
   getScrollContainer: () => HTMLElement | null
   getScrollContent: () => HTMLElement | null
+  scrollTo: ScrollTo
 }
 
 export interface InternalTableHeaderRef {

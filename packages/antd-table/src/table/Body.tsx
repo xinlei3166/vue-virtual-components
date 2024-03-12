@@ -317,7 +317,11 @@ export default defineComponent({
       return virtualListContent() ?? null
     }
 
-    expose({ getScrollContainer, getScrollContent })
+    function scrollTo(arg0: any, arg1?: any) {
+      virtualListRef.value?.scrollTo(arg0, arg1)
+    }
+
+    expose({ getScrollContainer, getScrollContent, scrollTo })
 
     // ====================== Render ======================
     const empty = computed(() => displayedData.value.length === 0)
