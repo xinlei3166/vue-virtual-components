@@ -27,7 +27,7 @@
   "scripts": {
     "build": "unbuild",
     "stub": "unbuild --stub",
-    "release": "yunque-release",
+    "release": "yunque-release --gtp",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 --commit-path ."
   },
   "dependencies": {

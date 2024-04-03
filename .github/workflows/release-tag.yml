@@ -17,7 +17,7 @@ jobs:
         id: tag
         run: |
           if [[ $GITHUB_REF_NAME =~ ^v.+ ]]; then
-            pkgName="vite"
+            pkgName="vue-virtual-components"
           else
             pkgName=${GITHUB_REF_NAME%@*}
           fi

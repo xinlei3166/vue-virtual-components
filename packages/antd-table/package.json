@@ -33,7 +33,7 @@
     "build:bundle": "unbuild",
     "build:style": "gulp --gulpfile scripts/build-style.js",
     "clean": "rimraf dist",
-    "release": "yunque-release",
+    "release": "yunque-release --gtp",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 --commit-path ."
   },
   "peerDependencies": {
