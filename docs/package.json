@@ -20,7 +20,8 @@
     "dev": "pnpm register:components && vitepress dev --host",
     "build": "pnpm register:components && vitepress build --base /vue-virtual-components/",
     "serve": "vitepress serve",
-    "register:components": "vitepress-rc --docsDir ."
+    "register:components": "vitepress-rc --docsDir .",
+    "deploy": "zsh ../scripts/gh-pages.sh"
   },
   "dependencies": {},
   "devDependencies": {

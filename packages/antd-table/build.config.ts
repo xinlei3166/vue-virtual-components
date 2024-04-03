@@ -36,8 +36,8 @@ export default defineBuildConfig({
       jsx: 'transform', // 'transform' | 'preserve' | 'automatic'
       jsxFactory: 'h',
       jsxFragment: 'Fragment',
-      jsxImportSource: 'vue'
-      // drop: ['console', 'debugger']
+      jsxImportSource: 'vue',
+      drop: ['console', 'debugger']
     }
   },
   hooks: {

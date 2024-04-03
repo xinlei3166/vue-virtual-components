@@ -30,6 +30,9 @@ export default defineConfig({
   },
 
   vite: {
+    ssr: {
+      noExternal: ['ant-design-vue', '@ant-design/icons-vue'],
+    },
     plugins: [
       demoblockVitePlugin(),
       AutoImport({
