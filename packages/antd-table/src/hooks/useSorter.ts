@@ -1,4 +1,5 @@
-import { computed, type ComputedRef, ref } from 'vue'
+import type { ComputedRef } from 'vue'
+import { computed, ref } from 'vue'
 import type {
   ColumnKey,
   CompareFn,
@@ -7,8 +8,8 @@ import type {
   SortOrder,
   SortState,
   TableBaseColumn,
-  TableExpandColumn,
-  TableSelectionColumn,
+  TableColumns,
+  TableProps,
   TmNode
 } from '../types'
 import { getFlagOfOrder, genSortState } from '../utils'
@@ -76,9 +77,7 @@ export function useSorter(
     dataRelatedCols,
     filteredData
   }: {
-    dataRelatedCols: ComputedRef<
-      Array<TableSelectionColumn | TableBaseColumn | TableExpandColumn>
-    >
+    dataRelatedCols: ComputedRef<TableColumns>
     filteredData: ComputedRef<TmNode[]>
   }
 ) {

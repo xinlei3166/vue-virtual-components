@@ -22,8 +22,7 @@ import type {
   InternalTableBodyRef,
   TableSelectionColumn
 } from '../types'
-import { tableProps } from '../types'
-import { tableInjectionKey } from '../types'
+import { tableProps, tableInjectionKey } from '../types'
 import { useRowSelection } from '../hooks/useRowSelection'
 import { useGroupHeader } from '../hooks/useGroupHeader'
 import { useSorter } from '../hooks/useSorter'
@@ -50,6 +49,7 @@ const Table = defineComponent({
       configProviderInjectionKey,
       defaultConfigProvider
     )
+    // @ts-ignore
     const prefixCls = computed(() => configProvider.getPrefixCls('table'))
 
     const getRowKey = () =>
@@ -89,9 +89,9 @@ const Table = defineComponent({
         for (let i = 0; i < cols.length; ++i) {
           const col = cols[i]
           if ('children' in col) {
-            return getSelectionColumn(col.children)
+            return getSelectionColumn(col.children!)
           } else if (col.type === 'selection') {
-            return col
+            return col as TableSelectionColumn
           }
         }
         return null
@@ -402,6 +402,7 @@ export default defineComponent({
       configProviderInjectionKey,
       defaultConfigProvider
     )
+    // @ts-ignore
     const prefixCls = ref(configProvider.getPrefixCls('table'))
 
     const tableRef = ref()
@@ -411,8 +412,18 @@ export default defineComponent({
 
     // ====================== Render ======================
     return () => (
-      <Spin class={`${prefixCls.value}-spin`} spinning={props.loading}>
-        <Table ref={tableRef} {...props} {...attrs} v-slots={{ ...slots }} />
+      <Spin
+        class={`${prefixCls.value}-spin`}
+        spinning={props.loading}
+        delay={300}
+      >
+        {{
+          default: () => (
+            <Table ref={tableRef} {...props} {...attrs}>
+              {slots}
+            </Table>
+          )
+        }}
       </Spin>
     )
   }

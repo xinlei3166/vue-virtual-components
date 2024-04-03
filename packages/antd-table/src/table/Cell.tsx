@@ -1,7 +1,7 @@
 import { defineComponent, inject, computed } from 'vue'
 import type { PropType } from 'vue'
 import { get } from 'lodash-es'
-import type { InternalRowData, TableColumn } from '../types'
+import type { InternalRowData, TableBaseColumn, TableColumn } from '../types'
 import { tableInjectionKey } from '../types'
 import { isValidElement } from '../utils/propsUtil'
 
@@ -17,13 +17,11 @@ export default defineComponent({
   props: {
     index: { type: Number, required: true },
     row: { type: Object as PropType<InternalRowData>, required: true },
-    column: { type: Object as PropType<TableColumn>, required: true }
+    column: { type: Object as PropType<TableBaseColumn>, required: true }
   },
   setup(props) {
     const { slots } = inject(tableInjectionKey)!
-    const slotName = computed(
-      () => props.column.slot || props.column.key || props.column.dataIndex
-    )
+    const slotName = computed(() => props.column.slot || props.column.key)
     const text = computed(() => {
       let _text = get(
         props.row,
@@ -42,12 +40,15 @@ export default defineComponent({
       column: props.column
     }))
 
-    return () => (
-      <>
-        {slots[slotName.value]
-          ? slots[slotName.value](slotProps.value)
-          : slotProps.value.text}
-      </>
-    )
+    // return {
+    //   slotName,
+    //   text,
+    //   slotProps,
+    //   slots
+    // }
+    return () =>
+      slotName.value && slots[slotName.value]
+        ? slots[slotName.value]?.(slotProps.value)
+        : slotProps.value.text
   }
 })

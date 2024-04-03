@@ -18,7 +18,7 @@ export default defineComponent({
       required: true
     },
     onUpdateChecked: {
-      type: Function as PropType<(checked: boolean) => void>,
+      type: Function as PropType<(checked: boolean, e: any) => void>,
       required: true
     }
   },

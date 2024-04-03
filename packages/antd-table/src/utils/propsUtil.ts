@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { isVNode, Fragment, Comment, Text, h } from 'vue'
 
 const cacheStringFunction = fn => {
@@ -407,27 +408,27 @@ export const getTextFromElement = ele => {
   return ele
 }
 
-export const initDefaultProps = <T>(
-  types: T,
-  defaultProps: any,
-): T => {
-  const propTypes: T = { ...types };
-  Object.keys(defaultProps).forEach(k => {
-    const prop = propTypes[k] as any;
-    if (prop) {
-      if (prop.type || prop.default) {
-        prop.default = defaultProps[k];
-      } else if (prop.def) {
-        prop.def(defaultProps[k]);
-      } else {
-        propTypes[k] = { type: prop, default: defaultProps[k] };
-      }
-    } else {
-      throw new Error(`not have ${k} prop`);
-    }
-  });
-  return propTypes;
-};
+// export const initDefaultProps = <T>(
+//   types: T,
+//   defaultProps: any,
+// ): T => {
+//   const propTypes: T = { ...types };
+//   Object.keys(defaultProps).forEach(k => {
+//     const prop = propTypes[k] as any;
+//     if (prop) {
+//       if (prop.type || prop.default) {
+//         prop.default = defaultProps[k];
+//       } else if (prop.def) {
+//         prop.def(defaultProps[k]);
+//       } else {
+//         propTypes[k] = { type: prop, default: defaultProps[k] };
+//       }
+//     } else {
+//       throw new Error(`not have ${k} prop`);
+//     }
+//   });
+//   return propTypes;
+// };
 
 export {
   splitAttrs,

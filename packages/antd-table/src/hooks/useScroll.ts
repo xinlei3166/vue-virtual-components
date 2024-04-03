@@ -62,7 +62,7 @@ export function useScroll(
         const width = colsWidths.value.get(colKey)
         columns[colKey] = positionInfo
         if ('children' in col) {
-          traverse(col.children)
+          traverse(col.children!)
           positionInfo.end = left
         } else {
           left += width || getNumberColWidth(col) || 0
@@ -108,7 +108,7 @@ export function useScroll(
       const width = colsWidths.value.get(colKey)
       columns[colKey] = positionInfo
       if ('children' in col) {
-        traverse(col.children, columns, right)
+        traverse(col.children!, columns, right)
         positionInfo.end = right
       } else {
         right += width || getNumberColWidth(col) || 0
@@ -157,12 +157,12 @@ export function useScroll(
       col => getColKey(col) === leftActiveFixedColKey.value
     )
     while (activeLeftFixedColumn && 'children' in activeLeftFixedColumn) {
-      const length: number = activeLeftFixedColumn.children.length
+      const length: number = activeLeftFixedColumn.children?.length || 0
       if (length === 0) break
       const nextActiveLeftFixedColumn =
-        activeLeftFixedColumn.children[length - 1]
+        activeLeftFixedColumn.children?.[length - 1]
       leftActiveFixedChildrenColKeys.value.push(
-        getColKey(nextActiveLeftFixedColumn)
+        getColKey(nextActiveLeftFixedColumn!)
       )
       activeLeftFixedColumn = nextActiveLeftFixedColumn
     }
@@ -201,7 +201,7 @@ export function useScroll(
     while (
       activeRightFixedColumn &&
       'children' in activeRightFixedColumn &&
-      activeRightFixedColumn.children.length
+      activeRightFixedColumn.children?.length
     ) {
       const nextActiveRightFixedColumn = activeRightFixedColumn.children[0]
       rightActiveFixedChildrenColKeys.value.push(
@@ -214,6 +214,7 @@ export function useScroll(
   function getScrollElements(): {
     header: HTMLElement | null
     body: HTMLElement | null
+    table: HTMLElement | null
   } {
     const header = tableRef.value ? tableRef.value.getHeaderElement() : null
     const body = tableRef.value ? tableRef.value.getBodyElement() : null

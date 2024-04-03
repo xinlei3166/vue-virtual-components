@@ -12,7 +12,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { prefixCls, mergedSortState } = inject(tableInjectionKey)
+    const { prefixCls, mergedSortState } = inject(tableInjectionKey)!
     const sortState = computed(() =>
       mergedSortState.value?.find(state => state.columnKey === props.column.key)
     )

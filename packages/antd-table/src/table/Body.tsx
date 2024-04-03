@@ -7,7 +7,7 @@ import MeasureCell from './MeasureCell'
 import Cell from './Cell'
 import BodyCheckbox from './BodyCheckbox'
 import BodyRadio from './BodyRadio'
-import type { RowKey, TmNode } from '../types'
+import type { RowKey, TmNode, RowData } from '../types'
 import { tableInjectionKey } from '../types'
 import { getColKey, isColumnSorting } from '../utils'
 import { warning } from '../utils/warning'
@@ -233,7 +233,7 @@ export default defineComponent({
                       column.type === 'selection',
                     [`${prefixCls.value}-td--hover`]: isColumnSorting(
                       column,
-                      mergedSortState.value
+                      mergedSortState.value!
                     ),
                     [`${prefixCls.value}-td--fixed-left--last`]:
                       leftActiveFixedColKey.value === colKey,
@@ -330,7 +330,7 @@ export default defineComponent({
       empty.value ? (
         slots.emptyText?.() || (
           <div class={`${prefixCls.value}-empty`}>
-            {renderEmpty.value('Table', tableProps.locale.emptyText)}
+            {renderEmpty.value?.('Table', tableProps.locale.emptyText)}
           </div>
         )
       ) : (

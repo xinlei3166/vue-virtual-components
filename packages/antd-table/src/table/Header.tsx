@@ -6,11 +6,11 @@ import {
   computed,
   watchEffect
 } from 'vue'
-import type { CSSProperties, ComputedRef } from 'vue'
+import type { CSSProperties, ComputedRef, PropType, VNode } from 'vue'
 import type { TooltipProps } from 'ant-design-vue'
 import { Tooltip } from 'ant-design-vue'
 import { happensIn, pxfy } from 'seemly'
-import type { TableColumn, ColumnKey } from '../types'
+import type { TableColumn, ColumnKey, TableBaseColumn } from '../types'
 import { tableInjectionKey, ASCEND, DESCEND } from '../types'
 import {
   getColKey,
@@ -46,15 +46,18 @@ function useColWidth(
 
 export const Wrapper = defineComponent({
   props: {
-    column: Object,
+    column: Object as PropType<TableColumn>,
     tooltipProps: Object,
     showSorterTooltip: [Object, Boolean]
   },
   setup(props, { slots }) {
     return () =>
-      isColumnSortable(props.column) && props.showSorterTooltip ? (
-        <Tooltip {...props.tooltipProps} key={props.column.key}>
-          {slots.default?.()}
+      isColumnSortable(props.column!) && props.showSorterTooltip ? (
+        <Tooltip {...props.tooltipProps} key={props.column?.key}>
+          {{
+            title: () => props.tooltipProps.title,
+            default: () => slots.default?.()
+          }}
         </Tooltip>
       ) : (
         <>{slots.default?.()}</>
@@ -64,20 +67,20 @@ export const Wrapper = defineComponent({
 
 export default defineComponent({
   setup(props) {
-    function handleColHeaderClick(
-      e: MouseEvent,
-      column: TableBaseColumn
-    ): void {
+    function handleColHeaderClick(e: MouseEvent, column: TableColumn): void {
       if (happensIn(e, 'tableFilter') || happensIn(e, 'tableResizable')) {
         return
       }
       if (!isColumnSortable(column)) return
       const activeSorter =
-        mergedSortState.value.find(state => state.columnKey === column.key) ||
+        mergedSortState.value?.find(state => state.columnKey === column.key) ||
         null
-      const nextSorter = createNextSorter(column, activeSorter)
+      const nextSorter = createNextSorter(
+        column as TableBaseColumn,
+        activeSorter
+      )
       deriveNextSorter(nextSorter)
-      onChange({ sorter: nextSorter })
+      onChange({ sorter: nextSorter! })
     }
 
     const {
@@ -205,19 +208,20 @@ export default defineComponent({
                       rowSpan: _rowSpan
                     })
                     const key = getColKey(column)
-                    const slotName = column.slots?.title as string
+                    const slotName = column.headerSlot
+                    const headerSlotProps = { column }
                     const createColumnVNode = (): VNode | null => {
                       if (column.type === 'selection') {
                         return column.multiple !== false &&
                           !mergedRowSelection.value.hideSelectAll ? (
-                          <HeaderCheckbox />
+                          <HeaderCheckbox row={row} />
                         ) : null
                       }
                       return (
                         <div class={`${prefixCls.value}-th--title-wrap`}>
                           <span class={`${prefixCls.value}-th--title`}>
-                            {slots[slotName]
-                              ? slots[slotName]?.()
+                            {slotName && slots[slotName]
+                              ? slots[slotName]?.(headerSlotProps)
                               : column.title}
                           </span>
                           {isColumnSortable(column) ? (
@@ -228,18 +232,18 @@ export default defineComponent({
                     }
 
                     const showSorterTooltip =
-                      column.showSorterTooltip === undefined
+                      column?.showSorterTooltip === undefined
                         ? tableProps.showSorterTooltip
                         : column.showSorterTooltip
                     const { cancelSort, triggerAsc, triggerDesc } =
                       tableProps.locale || {}
                     let sortTip: string | undefined = cancelSort
                     const sorterState =
-                      mergedSortState.value.find(
+                      mergedSortState.value?.find(
                         state => state.columnKey === column.key
                       ) || null
                     const sorterOrder = sorterState ? sorterState.order : null
-                    const nextSortOrder = getNextOrderOf(sorterOrder)
+                    const nextSortOrder = getNextOrderOf(sorterOrder!)
                     if (nextSortOrder === DESCEND) {
                       sortTip = triggerDesc
                     } else if (nextSortOrder === ASCEND) {
@@ -257,52 +261,59 @@ export default defineComponent({
                         tooltipProps={tooltipProps}
                         showSorterTooltip={showSorterTooltip}
                       >
-                        <th
-                          {...additionalProps}
-                          colspan={additionalProps.colSpan.value}
-                          rowspan={additionalProps.rowSpan.value}
-                          class={[
-                            additionalProps.class,
-                            `${prefixCls.value}-th`,
-                            column.fixed &&
-                              `${prefixCls.value}-th--fixed-${column.fixed}`,
-                            isLast ? `${prefixCls.value}-th--last` : '',
-                            {
-                              [`${prefixCls.value}-th--fixed-left--last`]:
-                                leftActiveFixedColKey.value === key,
-                              [`${prefixCls.value}-th--fixed-right--last`]:
-                                rightActiveFixedColKey.value === key,
-                              [`${prefixCls.value}-th--selection`]:
-                                column.type === 'selection',
-                              [`${prefixCls.value}-th--sortable`]:
-                                isColumnSortable(column),
-                              [`${prefixCls.value}-th--hover`]: isColumnSorting(
-                                column,
-                                mergedSortState.value
-                              )
-                            }
-                          ]}
-                          key={key}
-                          data-col-key={key}
-                          style={{
-                            textAlign: column.align,
-                            left: pxfy(fixedColumnLeftMap.value[key]?.start),
-                            right: pxfy(
-                              fixedHeaderColumnRightMap.value[key]?.start
-                            )
-                          }}
-                          onClick={
-                            column.type !== 'selection' &&
-                            column.type !== 'expand' &&
-                            !('children' in column)
-                              ? e => {
-                                  handleColHeaderClick(e, column)
+                        {{
+                          default: () => (
+                            <th
+                              {...additionalProps}
+                              colspan={additionalProps.colSpan.value}
+                              rowspan={additionalProps.rowSpan.value}
+                              class={[
+                                additionalProps.class,
+                                `${prefixCls.value}-th`,
+                                column.fixed &&
+                                  `${prefixCls.value}-th--fixed-${column.fixed}`,
+                                isLast ? `${prefixCls.value}-th--last` : '',
+                                {
+                                  [`${prefixCls.value}-th--fixed-left--last`]:
+                                    leftActiveFixedColKey.value === key,
+                                  [`${prefixCls.value}-th--fixed-right--last`]:
+                                    rightActiveFixedColKey.value === key,
+                                  [`${prefixCls.value}-th--selection`]:
+                                    column.type === 'selection',
+                                  [`${prefixCls.value}-th--sortable`]:
+                                    isColumnSortable(column),
+                                  [`${prefixCls.value}-th--hover`]:
+                                    isColumnSorting(
+                                      column,
+                                      mergedSortState.value!
+                                    )
                                 }
-                              : undefined
-                          }
-                        >
-                          {createColumnVNode()}
-                        </th>
+                              ]}
+                              key={key}
+                              data-col-key={key}
+                              style={{
+                                textAlign: column.align,
+                                left: pxfy(
+                                  fixedColumnLeftMap.value[key]?.start
+                                ),
+                                right: pxfy(
+                                  fixedHeaderColumnRightMap.value[key]?.start
+                                )
+                              }}
+                              onClick={
+                                column.type !== 'selection' &&
+                                column.type !== 'expand' &&
+                                !('children' in column)
+                                  ? e => {
+                                      handleColHeaderClick(e, column)
+                                    }
+                                  : undefined
+                              }
+                            >
+                              {createColumnVNode()}
+                            </th>
+                          )
+                        }}
                       </Wrapper>
                     )
                   }

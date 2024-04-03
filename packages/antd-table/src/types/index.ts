@@ -4,15 +4,12 @@ import type {
   VNodeChild,
   Ref,
   ComputedRef,
-  reactive,
   InjectionKey,
-  ToRefs,
   CSSProperties,
   PropType,
   ExtractPropTypes,
   TdHTMLAttributes
 } from 'vue'
-import type { TooltipProps } from 'ant-design-vue'
 import type { TreeNode, TreeMate } from 'treemate'
 import type { RowItem, ColItem } from '../hooks/useGroupHeader'
 
@@ -52,7 +49,10 @@ export const tableProps = {
     default: undefined
   },
   scroll: Object as PropType<Scroll>,
-  showSorterTooltip: [Boolean, Object] as PropType<boolean | TooltipProps>,
+  showSorterTooltip: {
+    type: [Boolean, Object] as PropType<boolean | TooltipProps>,
+    default: true
+  },
   size: { type: String as PropType<Size>, default: 'default' },
   tableLayout: { type: String as PropType<TableLayout>, default: 'fixed' },
   customHeaderRow: Function as PropType<CustomHeaderRow>,
@@ -60,9 +60,31 @@ export const tableProps = {
   onSort: Function as PropType<OnSort>
 }
 
+export type TooltipProps = Record<string, any>
 export type GetPopupContainer = (triggerNode: HTMLElement) => HTMLElement
+export type MaybeArray<T> = T | T[]
 
-export type TableProps = ExtractPropTypes<typeof tableProps>
+export type TableProps = Readonly<
+  ExtractPropTypes<typeof tableProps> & {
+    allowCheckingNotLoaded?: boolean
+    cascade?: boolean
+    'onUpdate:sorter'?: MaybeArray<OnUpdateSorter>
+    onUpdateSorter?: MaybeArray<OnUpdateSorter>
+    onSorterChange?: MaybeArray<OnUpdateSorter>
+    'onUpdate:checkedRowKeys'?: MaybeArray<OnUpdateCheckedRowKeys>
+    onUpdateCheckedRowKeys?: MaybeArray<OnUpdateCheckedRowKeys>
+    onCheckedRowKeysChange?: MaybeArray<OnUpdateCheckedRowKeys>
+  }
+>
+export type OnUpdateSorter = (sortState: SortState & SortState[] & null) => void
+export type OnUpdateCheckedRowKeys = (
+  keys: RowKey[],
+  rows: InternalRowData[],
+  meta: {
+    row: InternalRowData | undefined
+    action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' | 'checkInvert'
+  }
+) => void
 
 export type TableStyle = 'antd' | 'antd2'
 export type Size = 'default' | 'middle' | 'small'
@@ -96,6 +118,7 @@ export interface InternalRowData {
   [key: string]: unknown
 }
 
+export type DataIndex = string | string[] | number
 export type ColumnKey = string | number
 export type RowClassName = string
 export type RowKey = string | number
@@ -131,8 +154,8 @@ export interface RowSelection<T = InternalRowData> {
   checkStrictly?: boolean
   columnTitle?: string | VNode
   columnWidth?: string | number
-  fixed?: boolean
-  getCheckboxProps?: (row: T) => void
+  fixed?: 'left' | 'right'
+  getCheckboxProps?: (row: T) => Record<string, any>
   hideDefaultSelections?: boolean
   hideSelectAll?: boolean
   preserveSelectedRowKeys?: boolean
@@ -219,6 +242,9 @@ export type TableColumnGroup<T = InternalRowData> = {
   rowSpan?: never
   customCell?: never
   customHeaderCell?: never
+  showSorterTooltip?: never
+  slot?: never
+  headerSlot?: never
 } & CommonColumnInfo
 
 export type TableBaseColumn<T = InternalRowData> = {
@@ -226,37 +252,35 @@ export type TableBaseColumn<T = InternalRowData> = {
   rowSpan?: (row: T, index: number) => number
   titleColSpan?: number
   type?: never
-  dataIndex?: ColumnKey
+  dataIndex?: DataIndex
   key: ColumnKey
   title: TableColumnTitle
   customRender?: CustomRender
   sorter?: boolean | Sorter<T> | 'default'
   sortOrder?: SortOrder
+  defaultSortOrder?: SortOrder
   showSorterTooltip?: boolean | TooltipProps
   customCell?: CustomCell
   customHeaderCell?: CustomHeaderCell
+  slot?: string
+  headerSlot?: string
 } & CommonColumnInfo
 
-export type TableSelectionColumn<T = InternalRowData> = {
-  type: 'selection'
+export interface TableSelectionColumn<T = InternalRowData>
+  extends Omit<TableColumnGroup<T>, 'title' | 'key' | 'children' | 'type'> {
+  type: 'selection' | string
   multiple?: boolean
   disabled?: (row: T) => boolean
 
   // to suppress type error in utils
   title?: never
   key?: never
-  dataIndex?: never
-  sorter?: never
-  sortOrder?: never
-  colSpan?: never
-  rowSpan?: never
-  customCell?: never
-  customHeaderCell?: never
-} & CommonColumnInfo
+  children?: never
+}
 
 export interface TableExpandColumn<T = InternalRowData>
   extends Omit<TableSelectionColumn<T>, 'type' | 'title'> {
-  type: 'expand'
+  type: 'expand' | string
   title?: TableExpandColumnTitle
 }
 
@@ -278,14 +302,14 @@ export type TableInjection = {
   treeMate: Ref<TreeMate<InternalRowData, InternalRowData, InternalRowData>>
   mergedData: ComputedRef<TmNode[]>
   rawMergedData: ComputedRef<InternalRowData[]>
-  mergedSortState: ComputedRef<SortState | null>
+  mergedSortState: ComputedRef<SortState[] | null>
   deriveNextSorter: (sorter: SortState | null) => void
   scrollbarSize: Ref<{ width: number; height: number }>
   hasScrollbar: Ref<boolean | undefined>
 
   // useCheck
   mergedRowSelection: ComputedRef<RowSelection>
-  doUncheckAll: (checkWholeTable?: boolean) => void
+  doUncheckAll: (checkWholeTable?: boolean, isSelectNone?: boolean) => void
   doCheckInvert: (checkWholeTable?: boolean) => void
   doCheckAll: (checkWholeTable?: boolean) => void
   doCheck: (
@@ -343,7 +367,7 @@ export type TableInjection = {
   rowClassName: CreateRowClassName
 
   // events
-  onChange: (changeEventInfo: ChangeEventInfo) => void
+  onChange: (changeEventInfo: Partial<ChangeEventInfo>) => void
 }
 
 export const tableInjectionKey: InjectionKey<TableInjection> = Symbol(
@@ -359,7 +383,7 @@ export interface SortState {
   columnKey: ColumnKey
   order: SortOrder
   sorter: Sorter | boolean | 'default'
-  field: ColumnKey
+  field: DataIndex
   column: TableColumn
   // column columnKey field order
 }
@@ -379,7 +403,7 @@ export type InternalTableRef = {
   getHeaderElement: () => HTMLElement | null
   getBodyElement: () => HTMLElement | null
   getTableElement: () => HTMLElement | null
-  scrollTo: ScrollTo
+  scrollTo?: ScrollTo
 }
 
 export interface InternalTableBodyRef {

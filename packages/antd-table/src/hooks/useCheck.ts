@@ -28,7 +28,7 @@ export function useCheck(
   watch(
     () => mergedRowSelection.value.selectedRowKeys,
     val => {
-      uncontrolledCheckedRowKeys.value = val
+      uncontrolledCheckedRowKeys.value = val!
     }
   )
   const mergedCheckState = computed(() => {
@@ -96,7 +96,9 @@ export function useCheck(
     return mergedData.value.length === 0
   })
   const getRowInfos = (rowKeys: RowKey[] = []) => {
-    return rowKeys.map(rowKey => treeMate.value.getNode(rowKey)?.rawNode)
+    return rowKeys.map(
+      rowKey => treeMate.value.getNode(rowKey)?.rawNode as InternalRowData
+    )
   }
   function doUpdateCheckedRowKeys(
     keys: RowKey[],
@@ -251,7 +253,7 @@ export function useCheck(
     } else {
       // mergedRowSelection:onSelectAll-false
       const selectedRows = []
-      const changeRows = getRowInfos(rowKeysToUncheck)
+      const changeRows = getRowInfos(rowKeysToUncheck) as InternalRowData[]
       mergedRowSelection.value.onSelectAll?.(false, selectedRows, changeRows)
     }
   }

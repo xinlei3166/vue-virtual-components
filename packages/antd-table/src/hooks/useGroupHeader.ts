@@ -38,7 +38,7 @@ function getRowsAndCols(columns: TableColumns): {
     }
     for (const column of columns) {
       if ('children' in column) {
-        ensureMaxDepth(column.children, currentDepth + 1)
+        ensureMaxDepth(column.children || [], currentDepth + 1)
       } else {
         cols.push({
           key: getColKey(column),
@@ -66,8 +66,8 @@ function getRowsAndCols(columns: TableColumns): {
           rowSpan: 1,
           isLast: false
         }
-        ensureColLayout(column.children, currentDepth + 1)
-        column.children.forEach(childColumn => {
+        ensureColLayout(column.children || [], currentDepth + 1)
+        column.children?.forEach(childColumn => {
           rowItem.colSpan += rowItemMap.get(childColumn)?.colSpan ?? 0
         })
         if (cachedCurrentLeafIndex + rowItem.colSpan === totalRowSpan) {
@@ -118,6 +118,7 @@ export function useGroupHeader(
   dataRelatedCols: ComputedRef<TableColumns>
 } {
   const rowsAndCols = computed(() => getRowsAndCols(mergedColumns.value))
+  console.log('rowsAndCols', rowsAndCols)
   return {
     rows: computed(() => rowsAndCols.value.rows),
     cols: computed(() => rowsAndCols.value.cols),

@@ -9,7 +9,7 @@ Table.SELECTION_INVERT = SELECTION_INVERT
 Table.SELECTION_NONE = SELECTION_NONE
 
 Table.install = function (app: App) {
-  app.component(Table.name, Table)
+  app.component(Table.name!, Table)
   return app
 }
 

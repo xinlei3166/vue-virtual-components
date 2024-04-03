@@ -1,3 +1,4 @@
+import type { ComputedRef } from 'vue'
 import { computed } from 'vue'
 import type { AdditionalProps, RowData, TableColumn } from '../types'
 import { useInjectHover } from '../context/HoverContext'
@@ -26,11 +27,11 @@ export const useAdditionalProps = (props: {
   const { onHover, startRow, endRow } = useInjectHover()
 
   const { index, row, column, additionalProps = {}, colSpan, rowSpan } = props
-  const mergedColSpan = computed(
-    () => additionalProps.colSpan || colSpan || column.colSpan
+  const mergedColSpan: ComputedRef<number> = computed(
+    () => (additionalProps.colSpan || colSpan || column.colSpan) as number
   )
-  const mergedRowSpan = computed(
-    () => additionalProps.rowSpan || rowSpan || column.rowSpan
+  const mergedRowSpan: ComputedRef<number> = computed(
+    () => (additionalProps.rowSpan || rowSpan || column.rowSpan) as number
   )
   const internalColSpan = computed(() => mergedColSpan.value || 1)
   const internalRowSpan = computed(() => mergedRowSpan.value || 1)

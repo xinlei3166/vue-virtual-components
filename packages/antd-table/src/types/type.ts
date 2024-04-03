@@ -1,9 +1,9 @@
-import type { SlotsType, VNode } from 'vue'
+import type { SlotsType, VNode, App } from 'vue'
 
 export const withInstall = <T>(comp: T) => {
   const c = comp as any
   c.install = function (app: App) {
-    app.component(c.displayName || c.name, comp)
+    app.component(c.displayName || c.name, comp!)
   }
 
   return comp as T & Plugin
@@ -22,7 +22,7 @@ export function omit<T extends object, K extends keyof T>(
   return shallowCopy
 }
 
-export type CustomSlotsType<T> = SlotsType<T>
+export type CustomSlotsType<T extends Record<string, any>> = SlotsType<T>
 
 declare type VNodeChildAtom =
   | VNode

@@ -1,17 +1,32 @@
 :root {
-  --vp-c-brand: #08979c;
-  --vp-c-brand-light: #23a8a8;
-  --vp-c-brand-lighter: #43b5b1;
-  --vp-c-brand-lightest: #67c2bc;
-  --vp-c-brand-dark: #006d75;
-  --vp-c-brand-darker: #00474f;
+  /* #1677ff */
+  --vp-c-brand-1: hsl(215, 100%, 54%);
+  --vp-c-brand-2: hsl(215, 100%, 64%);
+  --vp-c-brand-3: hsl(215, 100%, 54%);
+  --vp-c-brand-soft: hsl(215, 100%, 54%, 14%);
+
+  --vp-code-block-bg: #f9fafb;
 }
 
-:root {
-  --vp-c-brand: #1ed8af;
-  --vp-c-brand-light: #45e6bd;
-  --vp-c-brand-lighter: #6ff2cd;
-  --vp-c-brand-lightest: #9effe0;
-  --vp-c-brand-dark: #10b395;
-  --vp-c-brand-darker: #068c78;
+html.dark {
+  --vp-code-block-bg: var(--vp-c-bg-alt, #161618);
+}
+
+/* vp-doc style */
+.VPDoc.has-aside .content-container {
+  max-width: 784px !important;
+}
+
+.vp-doc table:not(:where(.vp-raw, .vp-raw *)) {
+  display: table !important;
+  width: 100%;
+}
+
+.vp-doc tr:not(:where(.vp-raw, .vp-raw *)):nth-child(2n) {
+  background-color: transparent !important;
+}
+
+.vp-doc th:not(:where(.vp-raw, .vp-raw *)) {
+  color: unset !important;
+  background-color: #fafafa;
 }

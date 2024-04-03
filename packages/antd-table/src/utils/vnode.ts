@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { filterEmpty } from './propsUtil'
 import type { VNode, VNodeProps } from 'vue'
 import { cloneVNode, isVNode } from 'vue'

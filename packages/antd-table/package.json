@@ -32,7 +32,9 @@
     "build": "pnpm clean && run-p build:*",
     "build:bundle": "unbuild",
     "build:style": "gulp --gulpfile scripts/build-style.js",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "release": "yunque-release",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 --commit-path ."
   },
   "peerDependencies": {
     "ant-design-vue": "^4.0.0 || ^3.0.0",
@@ -40,11 +42,11 @@
   },
   "dependencies": {
     "@css-render/vue3-ssr": "^0.15.12",
-    "@vueuse/core": "^10.7.2",
+    "@vueuse/core": "^10.9.0",
     "lodash-es": "^4.17.21",
-    "treemate": "^0.3.11",
     "seemly": "^0.3.8",
-    "vue": "^3.4.13",
+    "treemate": "^0.3.11",
+    "vue": "^3.4.21",
     "vueuc": "^0.4.58"
   },
   "devDependencies": {

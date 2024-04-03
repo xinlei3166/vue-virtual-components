@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
       title: 'home'
     },
     component: () => import('@/components/HelloWorld.vue'),
-    redirect: { name: 'source-dev' }
+    redirect: { name: 'dev1' }
   },
   {
     path: '/dev1',

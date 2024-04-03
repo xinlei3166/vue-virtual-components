@@ -26,8 +26,12 @@
   },
   "scripts": {
     "build": "unbuild",
-    "stub": "unbuild --stub"
+    "stub": "unbuild --stub",
+    "release": "yunque-release",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 --commit-path ."
   },
-  "dependencies": {},
+  "dependencies": {
+    "vue": "^3.4.21"
+  },
   "devDependencies": {}
 }

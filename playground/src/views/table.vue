@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, unref, onBeforeMount } from 'vue'
+import { Table } from '../../../packages/antd-table/src/'
 import { tableColumns } from './columns'
 import { getList } from '@/api'
 
@@ -20,13 +21,14 @@ const pagination = reactive<Record<string, any>>({
 
 onBeforeMount(async () => {
   await init()
+  console.log(data.value)
 })
 
 async function init() {
   loading.value = true
   setTimeout(async () => {
     const res = await getList({
-      params: { page: pagination.current, pageSize: 20 }
+      params: { page: pagination.current, pageSize: 200 }
     })
     loading.value = false
     if (res.code !== 0) return
@@ -38,12 +40,12 @@ async function init() {
 async function onSearch() {
   pagination.current = 1
   await init()
+  console.log(data.value)
+  selectedRowKeys.value = []
 }
 
-async function onTableChange(pag: Record<string, any>) {
-  pagination.current = pag.current
-  pagination.pageSize = pag.pageSize
-  await init()
+async function onTableChange(value: any) {
+  console.log('onTableChange', value)
 }
 
 function onEdit(record: Record<string, any>) {
@@ -53,6 +55,83 @@ function onEdit(record: Record<string, any>) {
 function onPreview(record: Record<string, any>) {
   window.open('https://baidu.com')
 }
+
+const selectedRowKeys = ref([1])
+const rowSelection = computed(() => ({
+  onChange: (_selectedRowKeys, selectedRows) => {
+    selectedRowKeys.value = _selectedRowKeys
+    console.group('onChange')
+    console.log('selectedRowKeys', _selectedRowKeys)
+    console.log('selectedRows', selectedRows)
+    console.groupEnd()
+  },
+  onSelect: (record, selected, selectedRows, nativeEvent) => {
+    console.group('onSelect')
+    console.log('record', record)
+    console.log('selected', selected)
+    console.log('selectedRows', selectedRows)
+    console.log('nativeEvent', nativeEvent)
+    console.groupEnd()
+  },
+  onSelectAll: (selected, selectedRows, changeRows) => {
+    console.group('onSelectAll')
+    console.log('selected', selected)
+    console.log('selectedRows', selectedRows)
+    console.log('changeRows', changeRows)
+    console.groupEnd()
+  },
+  onSelectInvert: selectedRows => {
+    console.group('onSelectInvert')
+    console.log('selectedRows', selectedRows)
+    console.groupEnd()
+  },
+  onSelectNone: () => {
+    console.group('onSelectNone')
+    console.log('onSelectNone')
+    console.groupEnd()
+  },
+  getCheckboxProps: (record: Record<string, any> = {}) => {
+    return {
+      disabled: record.id === 2,
+      name: record.name
+    }
+  },
+  hideSelectAll: false,
+  selectedRowKeys: unref(selectedRowKeys),
+  selections: [
+    Table.SELECTION_ALL,
+    Table.SELECTION_INVERT,
+    Table.SELECTION_NONE,
+    {
+      key: 'odd',
+      text: 'Select Odd Row',
+      onSelect: changableRowKeys => {
+        let newSelectedRowKeys = []
+        newSelectedRowKeys = changableRowKeys.filter((_key, index) => {
+          if (index % 2 !== 0) {
+            return false
+          }
+          return true
+        })
+        selectedRowKeys.value = newSelectedRowKeys
+      }
+    },
+    {
+      key: 'even',
+      text: 'Select Even Row',
+      onSelect: changableRowKeys => {
+        let newSelectedRowKeys = []
+        newSelectedRowKeys = changableRowKeys.filter((_key, index) => {
+          if (index % 2 !== 0) {
+            return true
+          }
+          return false
+        })
+        selectedRowKeys.value = newSelectedRowKeys
+      }
+    }
+  ]
+}))
 </script>
 
 <template>
@@ -67,12 +146,17 @@ function onPreview(record: Record<string, any>) {
     </a-button>
     <virtual-table
       class="content"
+      :bordered="false"
       row-key="id"
-      bordered
+      :row-class-name="(record, index) => `row-${index}`"
+      table-style="antd"
+      table-layout="auto"
       :columns="tableColumns"
       :loading="loading"
       :data="data"
-      :scroll="{ x: 'max-content', y: 400 }"
+      :scroll="{ x: 'max-content', y: 600 }"
+      :row-selection="rowSelection"
+      show-sorter-tooltip
       @change="onTableChange"
     >
       <template #gender="{ record }">

@@ -12,6 +12,7 @@ export interface RenderEmptyProps {
 const RenderEmpty = (props: RenderEmptyProps) => {
   const className = props.className
   const description = props.description
+  // @ts-ignore
   const prefixCls = computed(() => defaultConfigProvider.getPrefixCls('empty'))
   const renderHtml = (componentName?: string) => {
     switch (componentName) {
@@ -54,7 +55,7 @@ function renderEmpty(
     <RenderEmpty
       componentName={componentName}
       description={description}
-      class={className}
+      className={className}
     />
   )
 }

@@ -5,6 +5,7 @@ import type {
   SortOrder,
   SortOrderFlag,
   SortState,
+  Sorter,
   TableBaseColumn,
   TableColumn
 } from '../types'
@@ -39,7 +40,7 @@ export function getStringColMinWidth(col: TableColumn): string | undefined {
 export function getColKey(col: TableColumn): ColumnKey {
   if (col.type === 'selection') return '__vuevct_table_selection__'
   if (col.type === 'expand') return '__vuevct_table_expand__'
-  return col.key
+  return col.key!
 }
 
 export function getColsKey(cols: TableColumn[]): ColumnKey[] {
@@ -82,15 +83,18 @@ export function getNextOrderOf(order: SortOrder): SortOrder {
 }
 
 export const genSortState = (
-  column: TableColumn,
-  sortState: SortState = {}
-) => {
+  column: Partial<TableColumn> & {
+    columnKey?: ColumnKey
+    order?: SortOrder
+  },
+  sortState: Partial<SortState> = {}
+): SortState => {
   return {
-    columnKey: column.key,
-    sorter: column.sorter,
+    columnKey: column.key!,
+    sorter: column.sorter!,
     order: column.sortOrder!,
-    field: column.dataIndex,
-    column,
+    field: column.dataIndex!,
+    column: column as TableColumn,
     ...sortState
   }
 }
@@ -105,7 +109,7 @@ export function createNextSorter(
       columnKey: column.key,
       sorter: column.sorter,
       order: getNextOrderOf(false)
-    })
+    }) as SortState | null
   } else {
     return {
       ...currentSortState,

@@ -1,4 +1,4 @@
-import type { ExtractPropTypes, InjectionKey, UnwrapRef } from 'vue'
+import type { ExtractPropTypes, InjectionKey, UnwrapRef, PropType } from 'vue'
 import { reactive } from 'vue'
 import defaultRenderEmpty from './renderEmpty'
 import type { RenderEmptyHandler } from './renderEmpty'
@@ -26,7 +26,7 @@ export type ConfigProviderProps = Partial<
 >
 
 export const defaultConfigProvider: UnwrapRef<ConfigProviderProps> = reactive({
-  getPrefixCls: (suffixCls: string, customizePrefixCls?: string) => {
+  getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => {
     if (customizePrefixCls) return customizePrefixCls
     return suffixCls ? `${defaultPrefixCls}-${suffixCls}` : defaultPrefixCls
   },

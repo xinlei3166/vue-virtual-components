@@ -4,8 +4,8 @@ import router from './router'
 
 import { Table } from '@vue-virtual-components/antd-table'
 // only dev
-import '../../packages/antd-table/src/styles/index.less'
-// import '@vue-virtual-components/antd-table/dist/styles/index.css'
+// import '../../packages/antd-table/src/styles/index.less'
+import '@vue-virtual-components/antd-table/dist/styles/index.css'
 
 import './mock'
 

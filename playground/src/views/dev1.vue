@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, unref, onBeforeMount } from 'vue'
+import message from 'ant-design-vue/es/message'
+import 'ant-design-vue/es/message/style'
 import { Table } from '../../../packages/antd-table/src/'
 import { tableColumns } from './columns'
 import { getList } from '@/api'
@@ -43,6 +45,9 @@ async function onSearch() {
 }
 
 async function onTableChange(value: any) {
+  if (value.sorter?.sorter === true) {
+    message.info(`远程排序：${value.sorter?.columnKey}`)
+  }
   console.log('onTableChange', value)
 }
 

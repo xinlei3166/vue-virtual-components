@@ -2,6 +2,7 @@
   "name": "@vue-virtual-components/docs",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "description": "@vue-virtual-components/docs",
   "repository": {
     "type": "git",
@@ -16,12 +17,20 @@
   "author": "君惜",
   "license": "MIT",
   "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
-    "docs:serve": "vitepress serve"
+    "dev": "pnpm register:components && vitepress dev --host",
+    "build": "pnpm register:components && vitepress build --base /vue-virtual-components/",
+    "serve": "vitepress serve",
+    "register:components": "vitepress-rc --docsDir ."
   },
   "dependencies": {},
   "devDependencies": {
-    "vitepress": "^1.0.0-rc.36"
+    "axios": "^1.6.8",
+    "qs": "^6.12.0",
+    "vitepress": "^1.0.1",
+    "vue": "^3.4.21",
+    "ant-design-vue": "^4.1.2",
+    "@ant-design/icons-vue": "^7.0.1",
+    "vitepress-theme-demoblock": "^3.0.7",
+    "@vue-virtual-components/antd-table": "workspace:*"
   }
 }

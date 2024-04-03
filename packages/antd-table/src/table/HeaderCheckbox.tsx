@@ -1,4 +1,4 @@
-import type { PropType } from 'vue'
+import type { ComputedRef, PropType } from 'vue'
 import { computed, defineComponent, inject } from 'vue'
 import { DownOutlined } from '@ant-design/icons-vue'
 import type {
@@ -27,10 +27,10 @@ export const SelectionMenu = defineComponent({
       doCheckAll,
       doUncheckAll,
       doCheckInvert
-    } = inject(tableInjectionKey)
+    } = inject(tableInjectionKey)!
 
-    const mergedDataKeys = computed(() =>
-      mergedData.value.map(x => !x.disabled && x.key)
+    const mergedDataKeys = computed(
+      () => mergedData.value.map(x => !x.disabled && x.key) as RowKey[]
     )
 
     const mergedSelections = computed(() => {
@@ -80,31 +80,36 @@ export const SelectionMenu = defineComponent({
       if (!mergedSelections.value) return null
       const menu = (
         <Menu getPopupContainer={tableProps.getPopupContainer}>
-          {mergedSelections.value.map((selection, index) => {
-            const { key, text, onSelect: onSelectionClick } = selection
-            return (
-              <Menu.Item
-                key={key || index}
-                onClick={() => {
-                  onSelectionClick?.(mergedDataKeys.value)
-                }}
-              >
-                {text}
-              </Menu.Item>
-            )
-          })}
+          {{
+            default: () =>
+              mergedSelections.value?.map((selection, index) => {
+                const { key, text, onSelect: onSelectionClick } = selection
+                return (
+                  <Menu.Item
+                    key={key || index}
+                    onClick={() => {
+                      onSelectionClick?.(mergedDataKeys.value)
+                    }}
+                  >
+                    {{ default: () => text }}
+                  </Menu.Item>
+                )
+              })
+          }}
         </Menu>
       )
 
       return (
         <div class={`${prefixCls.value}-selection-extra`}>
-          <Dropdown
-            overlay={menu}
-            getPopupContainer={tableProps.getPopupContainer}
-          >
-            <span>
-              <DownOutlined />
-            </span>
+          <Dropdown getPopupContainer={tableProps.getPopupContainer}>
+            {{
+              overlay: () => menu,
+              default: () => (
+                <span>
+                  <DownOutlined />
+                </span>
+              )
+            }}
           </Dropdown>
         </div>
       )
@@ -113,7 +118,7 @@ export const SelectionMenu = defineComponent({
 })
 
 export default defineComponent({
-  props: {},
+  props: { row: Object },
   setup(props) {
     const {
       prefixCls,
@@ -143,7 +148,7 @@ export default defineComponent({
     return () => {
       const getCheckboxProps = mergedRowSelection.value.getCheckboxProps
       const checkboxProps =
-        (getCheckboxProps ? getCheckboxProps(props.row) : null) || {}
+        (getCheckboxProps ? getCheckboxProps(props.row!) : null) || {}
 
       return (
         <div class={`${prefixCls.value}-selection`}>
