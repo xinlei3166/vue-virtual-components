@@ -1,4 +1,12 @@
-# 0.1.0 (2024-04-03)
+## [0.1.1](https://github.com/xinlei3166/vue-virtual-components/compare/v0.1.2...v0.1.1) (2024-04-03)
+
+
+
+## [0.1.1](https://github.com/xinlei3166/vue-virtual-components/compare/v0.1.0...v0.1.1) (2024-04-03)
+
+
+
+# [0.1.0](https://github.com/xinlei3166/vue-virtual-components/compare/35ef8f48f5dfd12cf66d08bdd8681f843650be57...v0.1.0) (2024-04-03)
 
 
 ### Features
