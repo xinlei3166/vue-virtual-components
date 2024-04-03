@@ -73,7 +73,7 @@ export default defineConfig({
     logo: '/vue.svg',
 
     editLink: {
-      pattern: 'https://github.com/xinlei3166/vue-virtual-components/edit/master/docs/:path',
+      pattern: 'https://github.com/xinlei3166/vue-virtual-components/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页'
     },
 

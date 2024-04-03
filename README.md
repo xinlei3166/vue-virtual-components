@@ -8,6 +8,6 @@ Vue3 虚拟组件
 ## Features
 
 | Package                          | Description                                           | Completed |
-|:---------------------------------|:------------------------------------------------------| --------- |
-| @vue-virtual-components/table    | antd style vue virtual table, use with ant-design-vue | 进行中    |
+|----------------------------------|:------------------------------------------------------|-----------|
+| @vue-virtual-components/antd-table    | antd style vue virtual table, use with ant-design-vue | 初步完成      |
 
