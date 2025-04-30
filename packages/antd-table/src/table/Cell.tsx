@@ -40,6 +40,19 @@ export default defineComponent({
       column: props.column
     }))
 
+    // customRender
+    if (props.column.customRender) {
+      const customRender = props.column.customRender
+      if (typeof customRender === 'function') {
+        return () => customRender(slotProps.value)
+      } else if (typeof customRender === 'string') {
+        const renderSlot = slots[customRender]
+        if (renderSlot) {
+          return () => renderSlot(slotProps.value)
+        }
+      }
+    }
+
     // return {
     //   slotName,
     //   text,
