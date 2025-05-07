@@ -1,4 +1,9 @@
-## [0.1.3](https://github.com/xinlei3166/vue-virtual-components/compare/v0.1.2...v0.1.3) (2024-04-03)
+## [0.1.4](https://github.com/xinlei3166/vue-virtual-components/compare/v0.1.2...v0.1.4) (2025-05-07)
+
+
+### Bug Fixes
+
+* fix lastColumn and scrollbar ([d51ecf4](https://github.com/xinlei3166/vue-virtual-components/commit/d51ecf4362974891ce17f7555d3d8a2cbcdf0ca8))
 
 
 
