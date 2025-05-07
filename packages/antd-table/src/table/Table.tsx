@@ -7,10 +7,11 @@ import {
   watch,
   nextTick,
   onMounted,
+  onBeforeUnmount,
   watchEffect
 } from 'vue'
 import type { CSSProperties } from 'vue'
-import { createId, pxfy } from 'seemly'
+import { createId, pxfy, depx } from 'seemly'
 import { createTreeMate } from 'treemate'
 import type {
   InternalRowData,
@@ -60,12 +61,11 @@ const Table = defineComponent({
       typeof props.rowClassName === 'function'
         ? props.rowClassName
         : (row: InternalRowData) => props.rowClassName as string
-
-    const hasScrollbar = ref<boolean>()
     const scrollbarSize = ref<{ width: number; height: number }>({
       width: 0,
       height: 0
     })
+    const hasScrollbar = ref(false)
 
     onMounted(() => {
       const el = document.querySelector('.v-vl--show-scrollbar') as any
@@ -132,13 +132,35 @@ const Table = defineComponent({
       return mergedData.value.map(tmNode => tmNode.rawNode)
     })
 
-    watch(mergedData, () => {
+    const observer = ref()
+    const observedElements = new WeakSet()
+    watch(mergedData, async () => {
       nextTick(() => {
-        const el = document.querySelector('.v-vl--show-scrollbar') as any
+        const el = selfRef.value?.querySelector('.v-vl--show-scrollbar') as any
         if (!el) return
-        hasScrollbar.value =
-          el.scrollHeight > el.clientHeight || el.offsetHeight > el.clientHeight
+        if (!observedElements.has(el)) {
+          observer.value = new ResizeObserver(entries => {
+            for (const entry of entries) {
+              hasScrollbar.value =
+                fixHeader.value &&
+                scrollbarSize.value.height > 0 &&
+                entry.target.scrollHeight > depx(props.scroll?.y as any)
+              console.log(`hasScrollbar: ${hasScrollbar.value}`)
+            }
+          })
+          observer.value.observe(el)
+          observedElements.add(el)
+        }
+        scrollbarSize.value = getTargetScrollBarSize(el)
+        console.log('scrollbarSize: ', scrollbarSize.value)
       })
+    })
+
+    onBeforeUnmount(() => {
+      const el = selfRef.value?.querySelector('.v-vl--show-scrollbar') as any
+      if (!el) return
+      observer.value.unobserve(el)
+      observer.value.disconnect()
     })
 
     // ====================== Check ======================

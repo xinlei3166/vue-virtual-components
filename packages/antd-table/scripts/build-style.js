@@ -8,7 +8,7 @@ import rename from 'gulp-rename'
 import header from 'gulp-header'
 import autoprefixer from 'gulp-autoprefixer'
 
-import pkg from '../package.json' assert { type: 'json' }
+import pkg from '../package.json' with { type: 'json' }
 // const moduleName = pkg.name
 const moduleName = 'index'
 const version = pkg.version

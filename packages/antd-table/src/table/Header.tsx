@@ -55,7 +55,7 @@ export const Wrapper = defineComponent({
       isColumnSortable(props.column!) && props.showSorterTooltip ? (
         <Tooltip {...props.tooltipProps} key={props.column?.key}>
           {{
-            title: () => props.tooltipProps.title,
+            title: () => props.tooltipProps?.title,
             default: () => slots.default?.()
           }}
         </Tooltip>

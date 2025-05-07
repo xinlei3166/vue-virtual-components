@@ -13,6 +13,6 @@ const app = createApp(App)
 
 app.use(router)
 
-app.use(Table)
+app.component(Table as any)
 
 app.mount('#app')

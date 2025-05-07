@@ -127,9 +127,16 @@ export function useScroll(
       }),
       width: scrollbarSize.value.width
     } as any as TableColumn
-
+    const lastColumns = lastColumn
+      ? [
+          {
+            ...lastColumn,
+            [lastColumn.fixed || 'right']: scrollbarSize.value.width
+          }
+        ]
+      : []
     return hasScrollbar.value
-      ? [...rightFixedColumns, column]
+      ? [...rightFixedColumns.slice(0, -1), ...lastColumns, column]
       : rightFixedColumns
   }
 

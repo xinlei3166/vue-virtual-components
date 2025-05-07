@@ -28,7 +28,7 @@
     "./dist/styles": "./dist/styles"
   },
   "scripts": {
-    "stub": "pnpm clean && unbuild --stub && build:style",
+    "stub": "pnpm clean && unbuild --stub && pnpm build:style",
     "build": "pnpm clean && run-p build:*",
     "build:bundle": "unbuild",
     "build:style": "gulp --gulpfile scripts/build-style.js",
