@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, unref, onBeforeMount } from 'vue'
-import { Table } from '../../../packages/antd-table/src/'
+import { Table } from '@vue-virtual-components/antd-table'
 import { tableColumns } from './columns'
 import { getList } from '@/api'
 
